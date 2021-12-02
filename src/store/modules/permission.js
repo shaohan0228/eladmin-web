@@ -6,7 +6,8 @@ const permission = {
   state: {
     routers: constantRouterMap,
     addRouters: [],
-    sidebarRouters: []
+    // 注意，如果有动态路由，需要修改此处
+    sidebarRouters: constantRouterMap
   },
   mutations: {
     SET_ROUTERS: (state, routers) => {

@@ -57,6 +57,21 @@ export const constantRouterMap = [
         meta: { title: '个人中心' }
       }
     ]
+  },
+  {
+    path: '/news',
+    component: Layout,
+    hidden: false,
+    redirect: 'noredirect',
+    meta: { title: 'news', icon: 'el-icon-s-claim' },
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/news'),
+        name: '新闻媒体',
+        meta: { title: '新闻媒体' }
+      }
+    ]
   }
 ]
 
