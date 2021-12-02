@@ -32,7 +32,11 @@ router.beforeEach((to, from, next) => {
       next(`/login?redirect=${to.fullPath}`) // 否则全部重定向到登录页
     }
   } else {
-    next()
+    if (store.getters.constantsMenuLoad) {
+      next()
+    } else {
+      loadMenus(next, to)
+    }
   }
   NProgress.done()
 })
@@ -52,6 +56,9 @@ export const loadMenus = (next, to) => {
   //   })
   //   store.dispatch('SetSidebarRouters', sidebarRoutes)
   // })
+
+  store.dispatch('SetConstantRouters')
+  next({ ...to, replace: true })
 }
 
 router.afterEach(() => {

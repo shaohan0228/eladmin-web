@@ -12,6 +12,7 @@ const getters = {
   loadMenus: state => state.user.loadMenus,
   permission_routers: state => state.permission.routers,
   addRouters: state => state.permission.addRouters,
+  constantsMenuLoad: state => state.permission.constantsMenuLoad,
   socketApi: state => state.api.socketApi,
   imagesUploadApi: state => state.api.imagesUploadApi,
   baseApi: state => state.api.baseApi,

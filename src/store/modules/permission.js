@@ -7,7 +7,8 @@ const permission = {
     routers: constantRouterMap,
     addRouters: [],
     // 注意，如果有动态路由，需要修改此处
-    sidebarRouters: constantRouterMap
+    sidebarRouters: constantRouterMap,
+    constantsMenuLoad: false
   },
   mutations: {
     SET_ROUTERS: (state, routers) => {
@@ -16,6 +17,11 @@ const permission = {
     },
     SET_SIDEBAR_ROUTERS: (state, routers) => {
       state.sidebarRouters = constantRouterMap.concat(routers)
+    },
+    SET_CONSTANT_ROUTERS: (state) => {
+      state.routers = constantRouterMap
+      state.sidebarRouters = constantRouterMap
+      state.constantsMenuLoad = true
     }
   },
   actions: {
@@ -24,6 +30,9 @@ const permission = {
     },
     SetSidebarRouters({ commit }, sidebarRouter) {
       commit('SET_SIDEBAR_ROUTERS', sidebarRouter)
+    },
+    SetConstantRouters({ commit }) {
+      commit('SET_CONSTANT_ROUTERS')
     }
   }
 }
