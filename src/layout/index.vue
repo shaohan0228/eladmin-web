@@ -1,17 +1,16 @@
 <template>
   <div :class="classObj" class="app-wrapper">
-    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-    <sidebar class="sidebar-container" />
-    <div :class="{hasTagsView:needTagsView}" class="main-container">
-      <app-main />
-    </div>
+    <!--    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />-->
+    <header />
+    <app-main />
     <!--  防止刷新后主题丢失  -->
     <Theme v-show="false" ref="theme" />
   </div>
 </template>
 
 <script>
-import { AppMain, Sidebar } from './components'
+// eslint-disable-next-line no-unused-vars
+import { AppMain, Header } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapState } from 'vuex'
 import Theme from '@/components/ThemePicker'
@@ -20,10 +19,10 @@ export default {
   name: 'Layout',
   components: {
     AppMain,
-    Sidebar,
     Theme
   },
   mixins: [ResizeMixin],
+
   computed: {
     ...mapState({
       sidebar: state => state.app.sidebar,
