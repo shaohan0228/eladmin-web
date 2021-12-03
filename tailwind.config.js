@@ -12,7 +12,7 @@ module.exports = {
     extend: {}
   },
   plugins: [],
-  prefix: 'tw-',
+  // prefix: '',
   corePlugins: {
     // 全局禁用outline 好像补齐作用
     outline: false
