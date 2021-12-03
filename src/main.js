@@ -16,6 +16,10 @@ import dict from './components/Dict'
 import checkPer from '@/utils/permission'
 import permission from './components/Permission'
 import './assets/styles/element-variables.scss'
+
+// tailwind css
+import './assets/styles/tailwind.css'
+
 // global css
 import './assets/styles/index.scss'
 

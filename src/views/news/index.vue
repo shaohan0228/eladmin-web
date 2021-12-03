@@ -1,3 +1,3 @@
 <template>
-  <h1>新闻媒体</h1>
+  <div class="tw-font-bold">112313132</div>
 </template>
