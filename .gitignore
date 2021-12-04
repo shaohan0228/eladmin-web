@@ -12,7 +12,7 @@ selenium-debug.log
 
 # Editor directories and files
 .idea
-.vscode
+.vscode/*
 *.suo
 *.ntvs*
 *.njsproj
@@ -21,3 +21,6 @@ selenium-debug.log
 
 package-lock.json
 yarn.lock
+
+# 设置项目配置为排出的目录
+!.vscode/settings.json
