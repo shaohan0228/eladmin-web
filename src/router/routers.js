@@ -34,13 +34,15 @@ export const constantRouterMap = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    meta: { title: '首页', icon: 'index', affix: true, noCache: true },
+    hidden: true,
+    redirect: '/main',
     children: [
       {
-        path: 'dashboard',
-        component: (resolve) => require(['@/views/home'], resolve),
-        name: 'Dashboard',
-        meta: { title: '首页', icon: 'index', affix: true, noCache: true }
+        path: '/main',
+        component: (resolve) => require(['@/views/main'], resolve),
+        hidden: true,
+        alias: '/'
       }
     ]
   },
@@ -61,15 +63,79 @@ export const constantRouterMap = [
   {
     path: '/news',
     component: Layout,
-    hidden: false,
-    redirect: 'noredirect',
-    meta: { title: 'news', icon: 'el-icon-s-claim' },
+    redirect: 'news/industry',
+    meta: { title: '新闻中心', icon: 'el-icon-s-claim' },
+    children: [
+      {
+        path: 'industry',
+        component: () => import('@/views/news'),
+        name: 'Industry',
+        meta: { title: '行业新闻', icon: 'el-icon-s-claim' }
+      },
+      {
+        path: 'realtime',
+        component: () => import('@/views/news'),
+        name: 'RealTime',
+        props: true,
+        meta: { title: '实时动态', icon: 'el-icon-s-order' }
+      }
+    ]
+  },
+  {
+    path: '/feedback',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '问题反馈', icon: 'el-icon-s-claim' },
     children: [
       {
         path: '',
+        component: () => import('@/views/news')
+      }
+    ]
+  },
+  {
+    path: '/resources',
+    component: Layout,
+    redirect: 'noRedirect',
+    name: 'Resources',
+    meta: { title: '资源中心', icon: 'component' },
+    children: [
+      {
+        path: 'knowledge',
         component: () => import('@/views/news'),
-        name: '新闻媒体',
-        meta: { title: '新闻媒体' }
+        name: 'Knowledge',
+        meta: { title: '知识查询', icon: 'tree' }
+      },
+      {
+        path: 'videos',
+        component: () => import('@/views/news'),
+        name: 'Videos',
+        meta: { title: '视频学习', icon: 'el-icon-s-platform' }
+      },
+      {
+        path: 'drivers',
+        component: () => import('@/views/news'),
+        name: 'Drivers',
+        meta: { title: '驱动下载', icon: 'el-icon-s-platform' }
+      },
+      {
+        path: 'adaptation',
+        component: () => import('@/views/news'),
+        name: 'Adaptation',
+        meta: { title: '兼容适配', icon: 'el-icon-s-platform' }
+      }
+    ]
+  },
+  {
+    path: '/about',
+    component: Layout,
+    name: 'About',
+    redirect: 'noRedirect',
+    meta: { title: '关于我们', icon: 'el-icon-s-tools' },
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/news')
       }
     ]
   }
