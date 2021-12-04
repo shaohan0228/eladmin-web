@@ -1,7 +1,7 @@
 <template>
   <div :class="classObj" class="app-wrapper">
     <!--    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />-->
-    <header />
+    <header-bar />
     <app-main />
     <!--  防止刷新后主题丢失  -->
     <Theme v-show="false" ref="theme" />
@@ -10,7 +10,7 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { AppMain, Header } from './components'
+import { AppMain, HeaderBar } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapState } from 'vuex'
 import Theme from '@/components/ThemePicker'
@@ -19,7 +19,8 @@ export default {
   name: 'Layout',
   components: {
     AppMain,
-    Theme
+    Theme,
+    HeaderBar
   },
   mixins: [ResizeMixin],
 
@@ -33,8 +34,9 @@ export default {
     }),
     classObj() {
       return {
-        hideSidebar: !this.sidebar.opened,
-        openSidebar: this.sidebar.opened,
+        // 由于现在已经改为了顶部导航栏，所以这个属性暂时不需要，且会导致为顶部导航栏的时候，有子菜单的菜单项没有padding-left和padding-right以及其它问题
+        // hideSidebar: !this.sidebar.opened,
+        // openSidebar: this.sidebar.opened,
         withoutAnimation: this.sidebar.withoutAnimation,
         mobile: this.device === 'mobile'
       }

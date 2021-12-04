@@ -1,3 +1,3 @@
 <template>
-  <div class="tw-font-bold">112313132</div>
+  <div class="font-bold">112313132</div>
 </template>
