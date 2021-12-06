@@ -1,0 +1,52 @@
+/*
+* @Author: Administrator
+* @Date:   2021-12-06 12:47:09
+* @Last Modified by:   Administrator
+* @Last Modified time: 2021-12-06 16:54:26
+*/
+html{color:#333;background:#fff;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td, hr, button, article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { margin:0;padding:0}
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { display: block }
+audio, canvas, video{display:inline-block;*display:inline;*zoom:1}
+body, button, input, select, textarea{ font: 12px/1.5 "\5FAE\8F6F\96C5\9ED1", "Microsoft Yahei", "Hiragino Sans GB", tahoma, arial, "\5B8B\4F53" }
+input, select, textarea{font-size:100% }
+table {border-collapse:collapse;border-spacing:0}
+fieldset, img{border:0}
+address, caption, cite, code, dfn, em, i, strong, th, var, optgroup{font-style: normal;font-weight: normal}
+address, caption, cite, code, dfn, em, th, var {font-style:normal;font-weight:500}
+ol, ul {list-style:none}
+h1, h2, h3, h4, h5, h6{font-weight:normal}
+a {color:#ca1824;text-decoration:none;cursor: pointer;}
+a:hover{color:#ca1824;opacity: 0.8;}
+.clearfix {/* 触发 hasLayout */zoom:1; }
+.clearfix:after {content: "."; display: block; height: 0; clear: both; visibility:hidden}
+button, input, select, textarea {font-size:100%; margin:0;vertical-align:baseline;*vertical-align:middle}
+button, input { line-height: normal }
+button, select { text-transform: none }
+button, html input[type="button"], input[type="reset"], input[type="submit"] {-webkit-appearance:button;cursor:pointer;*overflow:visible}
+button[disabled], html input[disabled] {cursor:default }
+input[type="checkbox"], input[type="radio"]{-webkit-box-sizing:border-box;box-sizing:border-box;padding:0; *height:13px;*width:13px}
+input[type="search"] { -webkit-appearance: textfield; -webkit-box-sizing: content-box; box-sizing: content-box }
+input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration{-webkit-appearance:none}
+button::-moz-focus-inner, input::-moz-focus-inner{border:0;padding:0}
+input:focus{outline:none;}
+.pull-left{float: left;}
+.pull-right{float: right;}
+.common-btn{background-color: #ca1824;border-color: #ca1824;}
+.common-btn:hover{background-color: #ca1824;border-color: #ca1824;opacity: 0.8;}
+.mbottom30{margin-bottom: 30px;}
+.fsize14{font-size: 14px;}
+.gfff{color: #fff;}
+.g666{color: #666;}
+.g999{color: #999;}
+.g333{color: #333;}
+.text-right{text-align: right;}
+.text-center{text-align: center;}
+.text-left{text-align: left;}
+.d-inline{display: inline-block;}
+.mright15{margin-right: 15px;}
+.w1360{width: 1360px;min-width: 1360px;margin: 0 auto;}
+.ptop190{padding-top: 190px;}
+.mright40{margin-right: 40px;}
+.mright10{margin-right: 10px;}
+span{display: inline-block;}

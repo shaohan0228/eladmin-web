@@ -120,7 +120,7 @@ module.exports = {
                 commons: {
                   name: 'chunk-commons',
                   test: resolve('src/components'), // can customize your rules
-                  minChunks: 3, //  minimum common number
+                  minChunks: 3, //  minimum workorder number
                   priority: 5,
                   reuseExistingChunk: true
                 }

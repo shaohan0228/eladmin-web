@@ -138,6 +138,16 @@ export const constantRouterMap = [
         component: () => import('@/views/news')
       }
     ]
+  },
+  {
+    path: '/workorder',
+    component: (resolve) => require(['@/views/workorder/index'], resolve),
+    hidden: true
+  },
+  {
+    path: '/index',
+    component: (resolve) => require(['@/views/home'], resolve),
+    hidden: true
   }
 ]
 
