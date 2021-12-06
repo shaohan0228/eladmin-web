@@ -1,3 +1,5 @@
+@import 'variables';
+
 #app {
 
   .main-container {
@@ -14,7 +16,7 @@
     height: 100%;
     position: fixed;
     font-size: 0;
-    top: 0;
+    top: $headerBarHeight;
     bottom: 0;
     left: 0;
     z-index: 1001;

@@ -40,7 +40,7 @@ export const constantRouterMap = [
     children: [
       {
         path: '/main',
-        component: (resolve) => require(['@/views/main'], resolve),
+        component: (resolve) => require(['@/views/home'], resolve),
         hidden: true,
         alias: '/'
       }
@@ -136,6 +136,57 @@ export const constantRouterMap = [
       {
         path: '',
         component: () => import('@/views/news')
+      }
+    ]
+  },
+  {
+    path: '/upload_manage',
+    component: Layout,
+    name: 'UploadManageLayout',
+    meta: { title: '上传管理' },
+    hidden: true,
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/upload'),
+        name: 'UploadManage',
+        meta: { title: '上传管理' },
+        redirect: 'knowledge',
+        children: [
+          {
+            path: 'knowledge',
+            component: () => import('@/views/upload/knowledge/List'),
+            meta: { title: '知识库' }
+          },
+          {
+            path: 'knowledge/upload',
+            component: () => import('@/views/upload/knowledge/Upload'),
+            hidden: true,
+            meta: { title: '知识上传', activeMenu: '/upload_manage/knowledge' }
+          },
+          {
+            path: 'driver',
+            component: () => import('@/views/upload/driver/List'),
+            meta: { title: '驱动' }
+          },
+          {
+            path: 'driver/upload',
+            component: () => import('@/views/upload/driver/Upload'),
+            hidden: true,
+            meta: { title: '驱动上传', activeMenu: '/upload_manage/driver' }
+          },
+          {
+            path: 'video',
+            component: () => import('@/views/upload/video/List'),
+            meta: { title: '视频' }
+          },
+          {
+            path: 'video/upload',
+            component: () => import('@/views/upload/video/Upload'),
+            hidden: true,
+            meta: { title: '视频上传', activeMenu: '/upload_manage/video' }
+          }
+        ]
       }
     ]
   },

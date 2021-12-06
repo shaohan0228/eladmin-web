@@ -67,12 +67,15 @@ export default {
 @import "~@/assets/styles/variables.scss";
 
 .header-bar {
+
+  box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.10);
+
   .logo {
     height: 60px;
   }
   .nav-bar {
     @apply m-auto;
-    max-width: 1190px;
+    max-width: 1200px;
   }
 
   // 设置选中的菜单没有颜色

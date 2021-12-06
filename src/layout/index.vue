@@ -23,7 +23,6 @@ export default {
     HeaderBar
   },
   mixins: [ResizeMixin],
-
   computed: {
     ...mapState({
       sidebar: state => state.app.sidebar,
