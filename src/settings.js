@@ -2,7 +2,8 @@ module.exports = {
   /**
    * @description 网站标题
    */
-  title: 'EL-ADMIN',
+  // title: '个人软件测试',
+  title: '河南省信创综合服务保障中心',
   /**
    * @description 是否显示 tagsView
    */
@@ -46,5 +47,5 @@ module.exports = {
   /**
    * 备案号
    */
-  caseNumber: '浙ICP备18005431号'
+  caseNumber: '浙ICP备18005431号-6'
 }
