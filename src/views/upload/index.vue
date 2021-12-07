@@ -94,7 +94,6 @@ export default {
 @import "~@/assets/styles/variables.scss";
 .sub-container {
   margin-left: $sideBarWidth;
-  //margin-left: 160px;
   padding: 20px;
   background: #f8f8f8;
   height: calc(100vh - 60px);

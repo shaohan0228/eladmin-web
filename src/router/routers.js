@@ -165,6 +165,12 @@ export const constantRouterMap = [
             meta: { title: '知识上传', activeMenu: '/upload_manage/knowledge' }
           },
           {
+            path: 'knowledge/:id/update',
+            component: () => import('@/views/upload/knowledge/Upload'),
+            hidden: true,
+            meta: { title: '知识修改', activeMenu: '/upload_manage/knowledge' }
+          },
+          {
             path: 'driver',
             component: () => import('@/views/upload/driver/List'),
             meta: { title: '驱动' }

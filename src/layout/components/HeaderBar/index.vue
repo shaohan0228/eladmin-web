@@ -69,6 +69,7 @@ export default {
 .header-bar {
 
   box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.10);
+  @apply bg-white;
 
   .logo {
     height: 60px;
