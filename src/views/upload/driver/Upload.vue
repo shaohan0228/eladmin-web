@@ -1,20 +1,19 @@
 <template>
-  <div class="dirver-container flex flex-auto justify-left">
-    <div class="dirvers-content">
-      <span>驱动上传</span>
-      <el-divider />
+  <div class="main-con">
+    <div class="main-tit">上传驱动</div>
+    <div class="main-content">
       <!--表单组件-->
-      <el-form ref="form" size="small" :model="form" :rules="rules" label-width="100px">
+      <el-form ref="uplaodForm" size="small" :model="uplaodForm" :rules="rules" label-width="100px">
         <el-form-item label="驱动标题" prop="driverName">
-          <el-input v-model="form.driverName" style="width: 670px" placeholder="请输入驱动标题" />
+          <el-input v-model="uplaodForm.driverName" style="width: 670px" placeholder="请输入驱动标题" />
         </el-form-item>
         <el-form-item label="驱动链接" prop="driverPath">
-          <el-input v-model="form.driverPath" style="width: 670px" placeholder="请输入驱动下载链接" />
+          <el-input v-model="uplaodForm.driverPath" :value="imageURL" style="width: 670px" placeholder="请输入驱动下载链接" />
           <el-upload
             ref="upload"
             :limit="1"
             :before-upload="beforeUpload"
-            :auto-upload="false"
+            :auto-upload="true"
             :on-success="handleSuccess"
             :on-error="handleError"
             :action="fileUploadApi"
@@ -25,7 +24,7 @@
           </el-upload>
         </el-form-item>
         <el-form-item label="驱动简介" prop="driverIntroduction">
-          <el-input v-model="form.driverIntroduction" :rows="5" type="textarea" style="width: 670px;" placeholder="请输入简介" />
+          <el-input v-model="uplaodForm.driverIntroduction" :rows="5" type="textarea" style="width: 670px;" placeholder="请输入简介" />
         </el-form-item>
         <el-form-item label="关联功能" prop="driverConnection">
           <el-cascader
@@ -33,28 +32,26 @@
             :props="{ multiple: false, checkStrictly: true }"
             :show-all-levels="true"
             clearable
-            placeholder="最多选择5项"
+            placeholder="请选择关联功能"
             style="width: 670px;"
             only-last="true"
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="danger">提交</el-button>
+          <el-button type="danger" @click.native.prevent="handleUploadForm">提交</el-button>
         </el-form-item>
       </el-form>
+
     </div>
   </div>
+
 </template>
 
 <script type="text/javascript">
 import { mapGetters } from 'vuex'
-import crudFile from '@/api/tools/localStorage'
 import CRUD from '@crud/crud'
 export default {
   name: 'DriverUpload',
-  cruds() {
-    return CRUD({ title: '文件', url: 'api/localStorage', crudMethod: { ...crudFile }})
-  },
   computed: {
     ...mapGetters([
       'baseApi',
@@ -63,8 +60,9 @@ export default {
   },
   data() {
     return {
-      form: { driverName: '', driverPath: '', driverIntroduction: '', driverConnection: '' },
+      uplaodForm: { driverName: '', driverPath: '', driverIntroduction: '', driverConnection: '' },
       fileList: [],
+      imageURL: '',
       options: [{
         value: 'zhinan',
         label: '指南',
@@ -178,10 +176,11 @@ export default {
         this.loading = false
         this.$message.error('上传文件大小不能超过 100MB!')
       }
-      this.form.name = file.name
+
       return isLt2M
     },
     handleSuccess(response, file, fileList) {
+      this.imageURL = URL.createObjectURL(file.raw)
       this.crud.notify('上传成功', CRUD.NOTIFICATION_TYPE.SUCCESS)
       this.$refs.upload.clearFiles()
       this.crud.resetForm()
@@ -195,16 +194,29 @@ export default {
         duration: 2500
       })
       this.loading = false
+    },
+    handleUploadForm() {
     }
   }
 }
 </script>
 <style lang="scss" scoped>
 
-  /*  .dirver-container {
-      .dirvers-content {
-        width: 1200px;
-        margin-top: 20px;
-      }
-    }*/
+  .main-con {
+    @apply bg-white;
+    padding-bottom: 20px;
+
+    .main-tit {
+      font-size: 16px;
+      color: #333;
+      padding: 0 20px;
+      line-height: 76px;
+      height: 78px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .main-content {
+      padding: 20px;
+    }
+  }
 </style>
