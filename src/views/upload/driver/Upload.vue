@@ -41,10 +41,8 @@
           <el-button type="danger" @click.native.prevent="handleUploadForm">提交</el-button>
         </el-form-item>
       </el-form>
-
     </div>
   </div>
-
 </template>
 
 <script type="text/javascript">
@@ -52,12 +50,6 @@ import { mapGetters } from 'vuex'
 import CRUD from '@crud/crud'
 export default {
   name: 'DriverUpload',
-  computed: {
-    ...mapGetters([
-      'baseApi',
-      'fileUploadApi'
-    ])
-  },
   data() {
     return {
       uplaodForm: { driverName: '', driverPath: '', driverIntroduction: '', driverConnection: '' },
@@ -163,6 +155,12 @@ export default {
         ]
       }
     }
+  },
+  computed: {
+    ...mapGetters([
+      'baseApi',
+      'fileUploadApi'
+    ])
   },
   methods: {
     // 上传文件

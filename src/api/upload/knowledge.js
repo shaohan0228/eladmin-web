@@ -14,3 +14,19 @@ export function getUploadKnowledge(id) {
     method: 'get'
   })
 }
+
+export function uploadKnowledge(data) {
+  return request({
+    url: '/knowledge/upload',
+    method: 'post',
+    data
+  })
+}
+
+export function editKnowledge(data) {
+  return request({
+    url: `/knowledge/edit`,
+    method: 'post',
+    data
+  })
+}
