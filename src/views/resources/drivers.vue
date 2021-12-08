@@ -29,14 +29,14 @@
           </div>
           <div class="drive-list mtop20">
             <div class="drive-list-con">
-              <div v-for="(item,i) in tableData.contents" :key="i" class="drive-list-item clearfix">
+              <div v-for="(item,i) in tableData.contents" :key="i" class="drive-list-item clearfix" @click="dowmload(item.path,item.id)">
                 <div class="drive-list-item-left">
                   <img :src="item.imgpath" width="52" alt="">
-                  <div class="fsize12 g1e7bf4">{{ item.driverSize }}</div>
+                  <div class="fsize12 g1e7bf4">{{ item.size }}</div>
                 </div>
                 <div class="drive-list-item-right">
-                  <div class="drive-list-tit">{{ item.driverTitle }}</div>
-                  <div class="drive-list-txt mtop10">{{ item.driverRemark }}</div>
+                  <div class="drive-list-tit">{{ item.title }}</div>
+                  <div class="drive-list-txt mtop10">{{ item.remark }}</div>
                   <div class="drive-list-tip text-right mtop20 g999">
                     <span class="mright15">{{ item.num }}人下载</span><span>{{ item.author }}</span>
                   </div>
@@ -67,14 +67,16 @@
         </div>
       </div>
     </div>
+    <Footer />
   </div>
 </template>
 <script>
+import Footer from '@/components/Footer'
 import ResourcesBanner from '@/components/ResourcesBanner'
 import driverPath from '../../assets/images/drive2.png'
-import { getUploadDriverListByQuery, getCheckList, getKownrankingList, getFirmList } from '../../api/upload/driver'
+import { getUploadDriverListByQuery, getCheckList, getKownrankingList, getFirmList, addDownloadCount } from '../../api/upload/driver'
 export default {
-  components: { ResourcesBanner },
+  components: { ResourcesBanner, Footer },
   data() {
     return {
       query: {
@@ -87,6 +89,7 @@ export default {
         size: 10,
         total: 0
       },
+      driverMap: { driverId: 0 },
       driverPath: driverPath,
       tableData: {
         total: 0,
@@ -95,35 +98,39 @@ export default {
         contents: [
           {
             imgpath: driverPath,
-            driverSize: '56.53MB',
-            driverTitle: 'Intel驱动下载Intel驱动下载Intel',
-            driverRemark: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载载Intel驱动下Intel驱动下载Intel驱动',
+            size: '56.53MB',
+            title: 'Intel驱动下载Intel驱动下载Intel',
+            remark: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载载Intel驱动下Intel驱动下载Intel驱动',
             num: 350,
-            author: '河南省信创综合服务保障中心'
+            author: '河南省信创综合服务保障中心',
+            path: 'http://gainetsoftwares.kuaiyunds.com/gainetsoftwares/filezilla3d0899f3-d291-4714-bd45-027ffaa49962.zip'
           },
           {
             imgpath: driverPath,
-            driverSize: '5MB',
-            driverTitle: 'Intel驱动下载Intel驱动下载Intel驱动下载ntel驱动下载ntel驱动下载',
-            driverRemark: 'Intel驱动下载Intel驱动下载Intel驱动Intel驱动',
+            size: '5MB',
+            title: 'Intel驱动下载Intel驱动下载Intel驱动下载ntel驱动下载ntel驱动下载',
+            remark: 'Intel驱动下载Intel驱动下载Intel驱动Intel驱动',
             num: 30,
-            author: '河南省信创综合服务保障中心'
+            author: '河南省信创综合服务保障中心',
+            path: 'http://gainetsoftwares.kuaiyunds.com/gainetsoftwares/filezilla3d0899f3-d291-4714-bd45-027ffaa49962.zip'
           },
           {
             imgpath: driverPath,
-            driverSize: '6MB',
-            driverTitle: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载ntel驱动下载ntel驱动下载',
-            driverRemark: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下',
+            size: '6MB',
+            title: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载ntel驱动下载ntel驱动下载',
+            remark: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下',
             num: 40,
-            author: '河南省信创综合服务保障中心'
+            author: '河南省信创综合服务保障中心',
+            path: 'http://gainetsoftwares.kuaiyunds.com/gainetsoftwares/filezilla3d0899f3-d291-4714-bd45-027ffaa49962.zip'
           },
           {
             imgpath: driverPath,
-            driverSize: '0.53MB',
-            driverTitle: 'Intel驱动下载Intel驱动下载IndfhssSfgs双方各el驱动下载Intel驱动下载ntel驱动下载ntel驱动下载',
-            driverRemark: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载载Intel驱',
+            size: '0.53MB',
+            title: 'Intel驱动下载Intel驱动下载IndfhssSfgs双方各el驱动下载Intel驱动下载ntel驱动下载ntel驱动下载',
+            remark: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载载Intel驱',
             num: 38,
-            author: '河南省信创综合服务保障中心'
+            author: '河南省信创综合服务保障中心',
+            path: 'http://gainetsoftwares.kuaiyunds.com/gainetsoftwares/filezilla3d0899f3-d291-4714-bd45-027ffaa49962.zip'
           }
         ]
       },
@@ -199,6 +206,14 @@ export default {
     handleCurrentChange(val) {
       this.query.page = val - 1
       this.handleDriverForm()
+    },
+    dowmload(linkPath, id) {
+      const link = document.createElement('a')
+      link.style.display = 'none'
+      link.href = linkPath
+      link.click()
+      this.driverMap.driverId = id
+      addDownloadCount(this.driverMap)
     }
   }
 }
@@ -216,7 +231,7 @@ export default {
   .drive-list{padding-bottom: 40px;background: #fff;}
   .drive-search{padding: 20px;}
   .drive-list-con{padding:0 30px 10px;}
-  .drive-list-item{padding: 38px 0 20px;border-bottom: 1px solid #ddd;}
+  .drive-list-item{padding: 38px 0 20px;border-bottom: 1px solid #ddd;cursor: pointer}
   .drive-list-item-left{display: inline-block;width:100px;padding-left: 5px;float: left;}
   .drive-list-item-right{float: left;width:629px;}
   .drive-list-tit{font-size: 18px;color: #333;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;}

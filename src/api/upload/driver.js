@@ -41,3 +41,11 @@ export function getFirmList() {
     method: 'get'
   })
 }
+export function addDownloadCount(data) {
+  return request({
+    url: `/driver/addDownloadCount`,
+    method: 'post',
+    data
+  })
+}
+
