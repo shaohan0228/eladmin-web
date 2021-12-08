@@ -2,7 +2,7 @@
 * @Author: Administrator
 * @Date:   2021-12-06 12:47:09
 * @Last Modified by:   Administrator
-* @Last Modified time: 2021-12-07 12:22:48
+* @Last Modified time: 2021-12-07 19:47:46
 */
 html{color:#333;background:#fff;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
 body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td, hr, button, article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { margin:0;padding:0}
@@ -36,12 +36,14 @@ input:focus{outline:none;}
 .common-btn:hover{background-color: #ca1824;border-color: #ca1824;opacity: 0.8;}
 .fsize12{font-size: 12px;}
 .fsize14{font-size: 14px;}
+.fsize16{font-size: 16px;}
 .fsize18{font-size: 18px;}
 .gfff{color: #fff;}
 .g666{color: #666;}
 .g999{color: #999;}
 .g333{color: #333;}
 .g1e7bf4{color: #1e7bf4;}
+.gca1824{color: #ca1824;}
 .text-right{text-align: right;}
 .text-center{text-align: center;}
 .text-left{text-align: left;}
@@ -50,6 +52,7 @@ input:focus{outline:none;}
 .mtop10{margin-top: 10px;}
 .mtop15{margin-top: 15px;}
 .mtop20{margin-top: 20px;}
+.mtop30{margin-top: 30px;}
 .mtop40{margin-top: 40px;}
 .mbottom0{margin-bottom:0px;}
 .mbottom10{margin-bottom: 10px;}
@@ -59,6 +62,7 @@ input:focus{outline:none;}
 .mright50{margin-right: 50px;}
 .mright10{margin-right: 10px;}
 .mright30{margin-right: 30px;}
+.mright20{margin-right: 20px;}
 span{display: inline-block;}
 .padd20{padding: 20px;}
 .ptop190{padding-top: 190px;}
@@ -110,3 +114,12 @@ span{display: inline-block;}
 .el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner{background-color: #ca1824;border-color: #ca1824;}
 .el-checkbox__input.is-checked+.el-checkbox__label{color: #ca1824;}
 .w600{width: 600px;}
+.el-radio-button__inner:hover{color: #ca1824;}
+.el-radio-button__orig-radio:checked+.el-radio-button__inner{background-color: #ca1824!important;border-color: #ca1824!important;-webkit-box-shadow: -1px 0 0 0 #ca1824;box-shadow: -1px 0 0 0 #ca1824;}
+.el-radio-button__orig-radio:checked+.el-radio-button__inner:hover{color: #fff;}
+.bacfff{background: #fff;}
+.g9e9ea0{color: #9e9ea0;}
+.header-link li{float: left;font-size: 14px;color: #333;margin-right: 30px;}
+
+
+

@@ -3,11 +3,11 @@
     <el-container>
       <el-container>
         <el-aside width="160px" class="workorder-menu">
-          <div class="menu-tit">工单管理</div>
+          <div class="menu-tit">问题管理</div>
           <div>
             <el-menu>
               <el-menu-item index="1">
-                <span slot="title" @click="workOrder">工单列表</span>
+                <span slot="title" @click="questionList">问题列表</span>
               </el-menu-item>
             </el-menu>
           </div>
@@ -124,15 +124,14 @@ export default {
       console.log('结束工单' + this.id)
       this.dialogFormVisible = true
     },
-    workOrder() {
-      this.$router.push({ path: '/workorder/list' })
+    questionList() {
+      this.$router.push({ path: '/question/list' })
     }
   }
 }
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  //@import url("https://unpkg.com/element-ui/lib/theme-chalk/index.css");
   @import "../../assets/styles/common.css";
   html,body{width: 100%;height: 100%;min-height: 100%;min-height: 100vh;background: #f8f8f8;}
   .el-container{width: 100%;min-height: 80%;min-height: 80vh;}

@@ -198,12 +198,51 @@ export const constantRouterMap = [
   },
   {
     path: '/workorder',
-    component: (resolve) => require(['@/views/workorder/index'], resolve),
-    hidden: true
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: ':id/details',
+        component: () => import('@/views/workorder/index'),
+        hidden: true,
+        meta: { title: '工单详情' }
+      },
+      {
+        path: 'list',
+        component: () => import('@/views/workorder/workOrderList'),
+        hidden: true,
+        meta: { title: '工单列表' }
+      }
+    ]
+  },
+  {
+    path: '/question',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: ':id/details',
+        component: () => import('@/views/question/index'),
+        hidden: true,
+        meta: { title: '问题详情' }
+      },
+      {
+        path: 'list',
+        component: () => import('@/views/question/questionList'),
+        hidden: true,
+        meta: { title: '问题列表' }
+      },
+      {
+        path: 'feedback',
+        component: () => import('@/views/question/feedback'),
+        hidden: true,
+        meta: { title: '问题反馈' }
+      }
+    ]
   },
   {
     path: '/index',
-    component: (resolve) => require(['@/views/home'], resolve),
+    component: () => import('@/views/home'),
     hidden: true
   }
 ]
