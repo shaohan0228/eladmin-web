@@ -104,6 +104,13 @@ export const constantRouterMap = [
         meta: { title: '视频学习', icon: 'el-icon-s-platform' }
       },
       {
+        path: 'showVideo',
+        component: () => import('@/views/resources/video'),
+        name: 'showVideo',
+        hidden: true,
+        meta: { title: '视频观看', icon: 'el-icon-s-platform', activeMenu: '/resources/showVideo' }
+      },
+      {
         path: 'drivers',
         component: () => import('@/views/resources/drivers'),
         name: 'Drivers',

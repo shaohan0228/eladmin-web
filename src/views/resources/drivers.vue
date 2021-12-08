@@ -29,7 +29,7 @@
           </div>
           <div class="drive-list mtop20">
             <div class="drive-list-con">
-              <div v-for="(item,i) in tableData.contents" :key="i" class="drive-list-item clearfix" @click="dowmload(item.path,item.id)">
+              <div v-for="(item,i) in tableData.contents" :key="i" class="drive-list-item clearfix">
                 <div class="drive-list-item-left">
                   <img :src="item.imgpath" width="52" alt="">
                   <div class="fsize12 g1e7bf4">{{ item.size }}</div>
@@ -37,8 +37,9 @@
                 <div class="drive-list-item-right">
                   <div class="drive-list-tit">{{ item.title }}</div>
                   <div class="drive-list-txt mtop10">{{ item.remark }}</div>
-                  <div class="drive-list-tip text-right mtop20 g999">
+                  <div class="drive-list-tip text-left mtop20 g999">
                     <span class="mright15">{{ item.num }}人下载</span><span>{{ item.author }}</span>
+                    <el-button type="text" class="downbtn pull-right" @click="dowmload(item.path,item.id)">下载</el-button>
                   </div>
                 </div>
               </div>
@@ -60,8 +61,16 @@
             <div class="fsize18 g333 mtop10">下载排行榜</div>
             <el-table :data="downrankingList" class="mtop20" style="width: 100%;">
               <el-table-column prop="index" label="排名" width="50" />
-              <el-table-column prop="tit" label="标题" width="210" />
+              <el-table-column prop="tit" label="标题" width="150" />
               <el-table-column prop="number" label="下载次数" />
+              <el-table-column
+                label="操作"
+                width="60"
+              >
+                <template slot-scope="scope">
+                  <el-button type="text" class="downbtn" @click="dowmload(scope.row.path,scope.row.id)">下载</el-button>
+                </template>
+              </el-table-column>
             </el-table>
           </div>
         </div>
@@ -139,22 +148,32 @@ export default {
         { checkName: '内存', checkValue: '2' }
       ],
       downrankingList: [{
+        id: 1,
+        path: 'http://gainetsoftwares.kuaiyunds.com/gainetsoftwares/filezilla3d0899f3-d291-4714-bd45-027ffaa49962.zip',
         index: '1',
         tit: '《大数据工程师必读手册工程师必读 手册》',
         number: '89999'
       }, {
+        id: 2,
+        path: 'http://gainetsoftwares.kuaiyunds.com/gainetsoftwares/filezilla3d0899f3-d291-4714-bd45-027ffaa49962.zip',
         index: '2',
         tit: '《大数据工程师必读手册》',
         number: '89999'
       }, {
+        id: 3,
+        path: 'http://gainetsoftwares.kuaiyunds.com/gainetsoftwares/filezilla3d0899f3-d291-4714-bd45-027ffaa49962.zip',
         index: '3',
         tit: '《大数据工程师必读手册》',
         number: '89999'
       }, {
+        id: 4,
+        path: 'http://gainetsoftwares.kuaiyunds.com/gainetsoftwares/filezilla3d0899f3-d291-4714-bd45-027ffaa49962.zip',
         index: '4',
         tit: '《大数据工程师必读手册》',
         number: '89999'
       }, {
+        id: 5,
+        path: 'http://gainetsoftwares.kuaiyunds.com/gainetsoftwares/filezilla3d0899f3-d291-4714-bd45-027ffaa49962.zip',
         index: '5',
         tit: '《大数据工程师必读手册》',
         number: '89999'
@@ -208,6 +227,7 @@ export default {
       this.handleDriverForm()
     },
     dowmload(linkPath, id) {
+      console.info('linkPath: ' + linkPath + ',id:' + id)
       const link = document.createElement('a')
       link.style.display = 'none'
       link.href = linkPath
@@ -222,6 +242,8 @@ export default {
   @import "../../assets/styles/common.css";
   html,body{width: 100%;height: 100%;min-height: 100%;min-height: 100vh;background: #f8f8f8;}
   .drive{background: #f8f8f8;}
+  .banner{background: url(../../assets/images/drive1.png);background-repeat: no-repeat;background-position: top center;}
+  .drive-tit{font-size: 46px;color: #fff;text-align: center;padding-top: 160px;}
   .drive-con{padding: 40px 0;}
   .drive-left{float: left;width: 794px;}
   .drive-right{float: right;width: 387px;}
@@ -231,11 +253,13 @@ export default {
   .drive-list{padding-bottom: 40px;background: #fff;}
   .drive-search{padding: 20px;}
   .drive-list-con{padding:0 30px 10px;}
-  .drive-list-item{padding: 38px 0 20px;border-bottom: 1px solid #ddd;cursor: pointer}
+  .drive-list-item{padding: 38px 0 20px;border-bottom: 1px solid #ddd;}
   .drive-list-item-left{display: inline-block;width:100px;padding-left: 5px;float: left;}
   .drive-list-item-right{float: left;width:629px;}
   .drive-list-tit{font-size: 18px;color: #333;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;}
   .drive-list-txt{display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;font-size: 12px;color: #666;line-height: 22px;}
   .downranking{background: #fff;padding: 20px;}
   .el-table th.el-table__cell{background: rgba(30,123,244,0.06);color: #2f489c;}
+  .downbtn{padding:5px;}
+  .downbtn.el-button--text:active, .downbtn.el-button--text:focus, .downbtn.el-button--text:hover{border:0;background:none;color: #ca1824;}
 </style>

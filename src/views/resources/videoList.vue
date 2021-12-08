@@ -29,7 +29,7 @@
         <div class="videolist">
           <div class="videolist-tit">编辑精选</div>
           <div class="videolist-con clearfix">
-            <div v-for="(item,i) in tableData.contents" :key="i" :class="i %4 == 3 ? &quot;videolist-item&quot; :&quot;videolist-item mright20&quot;">
+            <div v-for="(item,i) in tableData.contents" :key="i" :class="i %4 == 3 ? 'videolist-item' :'videolist-item mright20'" @click="goVideo(item.videoId)">
               <div class="videolist-video">
                 <img :src="item.imgpath" alt="">
               </div>
@@ -83,6 +83,7 @@ export default {
         page: 0,
         contents: [
           {
+            videoId: 1,
             imgpath: driverPath,
             title: 'Intel驱动下载Intel驱动下载Intel',
             remark: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载载Intel驱动下Intel驱动下载Intel驱动',
@@ -90,6 +91,7 @@ export default {
             author: '河南省信创综合服务保障中心'
           },
           {
+            videoId: 2,
             imgpath: driverPath,
             title: 'Intel驱动下载Intel驱动下载Intel',
             remark: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载载Intel驱动下Intel驱动下载Intel驱动',
@@ -97,6 +99,7 @@ export default {
             author: '河南省信创综合服务保障中心'
           },
           {
+            videoId: 3,
             imgpath: driverPath,
             title: 'IntewerwerwWerwer23453晚上',
             remark: 'Intel驱动下载Intel驱动稍等发Intel驱动下载Intel驱动下载载Intel驱动下Intel驱动下载Intel驱动',
@@ -104,6 +107,7 @@ export default {
             author: '河南省信创综合服务保障中心'
           },
           {
+            videoId: 4,
             imgpath: driverPath,
             title: 'Intel驱动下载I水电费tel',
             remark: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载载Intel驱动下Intel驱动asfasfffffffffffffffffffffffffffffffff下载Intel驱动',
@@ -135,6 +139,14 @@ export default {
     // 根据厂商获取分类
     getCheckList() {
       this.checklist = getCheckList(this.query.contents.firmValue)
+    },
+    goVideo(videoId) {
+      this.$router.push({
+        path: '/resources/showVideo',
+        query: {
+          videoId: videoId
+        }
+      })
     },
     // 获取表格数据
     async handleVideoForm() {

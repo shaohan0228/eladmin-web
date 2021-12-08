@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getUploadViedoList(data) {
   return request({
-    url: `/knowledge/upload/list`,
+    url: `/video/upload/list`,
     method: 'post',
     data
   })
@@ -16,7 +16,7 @@ export function getUploadVideo(id) {
 }
 export function getUploadDriverListByQuery(data) {
   return request({
-    url: `/driver/upload/list`,
+    url: `/video/upload/list`,
     method: 'post',
     data
   })
@@ -24,14 +24,21 @@ export function getUploadDriverListByQuery(data) {
 
 export function getCheckList(firmId) {
   return request({
-    url: `/driver/classify/${firmId}`,
+    url: `/video/classify/${firmId}`,
     method: 'get'
   })
 }
 
 export function getFirmList() {
   return request({
-    url: `/driver/FirmList`,
+    url: `/video/FirmList`,
+    method: 'get'
+  })
+}
+
+export function getVideoInfo(firmId) {
+  return request({
+    url: `/video/getVideoInfo/${firmId}`,
     method: 'get'
   })
 }
