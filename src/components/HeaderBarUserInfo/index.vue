@@ -15,13 +15,13 @@
         <router-link to="messages">
           <el-dropdown-item>消息中心</el-dropdown-item>
         </router-link>
-        <router-link v-if="userRole === 'user'" to="question/list">
+        <router-link to="question/list">
           <el-dropdown-item>问题管理</el-dropdown-item>
         </router-link>
-        <router-link v-if="userRole === 'company'" to="question/list">
+        <router-link to="question/list">
           <el-dropdown-item>工单管理</el-dropdown-item>
         </router-link>
-        <router-link v-if="userRole === 'company'" to="question/list">
+        <router-link to="question/list">
           <el-dropdown-item>上传中心</el-dropdown-item>
         </router-link>
         <span style="display:block;" @click="logout">
