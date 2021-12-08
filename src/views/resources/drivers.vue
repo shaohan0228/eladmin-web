@@ -12,8 +12,8 @@
             <el-form ref="query" label-width="80px">
               <el-form-item label="厂商：" class="mbottom10">
                 <!-- <el-button type="text" class="g333"  >{{item.firmName}}</el-button>-->
-                <el-radio-group v-model="query.contents.firmName">
-                  <el-radio-button v-for="item in firmList" :key="item.firmName" v-model="firmList" class="g333" :label="item.firmName" />
+                <el-radio-group v-model="query.contents.firmValue">
+                  <el-radio-button v-for="item in firmList" :key="item.firmValue" v-model="firmList" class="g333" :label="item.firmName" />
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="分类：" class="mbottom0">
@@ -29,7 +29,7 @@
           </div>
           <div class="drive-list mtop20">
             <div class="drive-list-con">
-              <div v-for="(item,i) in driverList" :key="i" class="drive-list-item clearfix">
+              <div v-for="(item,i) in tableData.contents" :key="i" class="drive-list-item clearfix">
                 <div class="drive-list-item-left">
                   <img :src="item.imgpath" width="52" alt="">
                   <div class="fsize12 g1e7bf4">{{ item.driverSize }}</div>
@@ -58,7 +58,7 @@
         <div class="drive-right">
           <div class="downranking">
             <div class="fsize18 g333 mtop10">下载排行榜</div>
-            <el-table :data="tableData" class="mtop20" style="width: 100%;">
+            <el-table :data="downrankingList" class="mtop20" style="width: 100%;">
               <el-table-column prop="index" label="排名" width="50" />
               <el-table-column prop="tit" label="标题" width="210" />
               <el-table-column prop="number" label="下载次数" />
@@ -72,7 +72,7 @@
 <script>
 import ResourcesBanner from '@/components/ResourcesBanner'
 import driverPath from '../../assets/images/drive2.png'
-import { getUploadDriverListByQuery } from '../../api/upload/driver'
+import { getUploadDriverListByQuery, getCheckList, getKownrankingList, getFirmList } from '../../api/upload/driver'
 export default {
   components: { ResourcesBanner },
   data() {
@@ -85,20 +85,53 @@ export default {
         },
         page: 0,
         size: 10,
-        total: 0,
-        sort: 'id,desc'
+        total: 0
       },
       driverPath: driverPath,
-      driverList: [
-        { imgpath: driverPath, driverSize: '56.53MB', driverTitle: 'Intel驱动下载Intel驱动下载Intel', driverRemark: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载载Intel驱动下Intel驱动下载Intel驱动', num: 350, author: '河南省信创综合服务保障中心' },
-        { imgpath: driverPath, driverSize: '5MB', driverTitle: 'Intel驱动下载Intel驱动下载Intel驱动下载ntel驱动下载ntel驱动下载', driverRemark: 'Intel驱动下载Intel驱动下载Intel驱动Intel驱动', num: 30, author: '河南省信创综合服务保障中心' },
-        { imgpath: driverPath, driverSize: '6MB', driverTitle: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载ntel驱动下载ntel驱动下载', driverRemark: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下', num: 40, author: '河南省信创综合服务保障中心' },
-        { imgpath: driverPath, driverSize: '0.53MB', driverTitle: 'Intel驱动下载Intel驱动下载IndfhssSfgs双方各el驱动下载Intel驱动下载ntel驱动下载ntel驱动下载', driverRemark: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载载Intel驱', num: 38, author: '河南省信创综合服务保障中心' }
+      tableData: {
+        total: 0,
+        size: 10,
+        page: 0,
+        contents: [
+          {
+            imgpath: driverPath,
+            driverSize: '56.53MB',
+            driverTitle: 'Intel驱动下载Intel驱动下载Intel',
+            driverRemark: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载载Intel驱动下Intel驱动下载Intel驱动',
+            num: 350,
+            author: '河南省信创综合服务保障中心'
+          },
+          {
+            imgpath: driverPath,
+            driverSize: '5MB',
+            driverTitle: 'Intel驱动下载Intel驱动下载Intel驱动下载ntel驱动下载ntel驱动下载',
+            driverRemark: 'Intel驱动下载Intel驱动下载Intel驱动Intel驱动',
+            num: 30,
+            author: '河南省信创综合服务保障中心'
+          },
+          {
+            imgpath: driverPath,
+            driverSize: '6MB',
+            driverTitle: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载ntel驱动下载ntel驱动下载',
+            driverRemark: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下',
+            num: 40,
+            author: '河南省信创综合服务保障中心'
+          },
+          {
+            imgpath: driverPath,
+            driverSize: '0.53MB',
+            driverTitle: 'Intel驱动下载Intel驱动下载IndfhssSfgs双方各el驱动下载Intel驱动下载ntel驱动下载ntel驱动下载',
+            driverRemark: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载载Intel驱',
+            num: 38,
+            author: '河南省信创综合服务保障中心'
+          }
+        ]
+      },
+      checklist: [
+        { checkName: 'CPU', checkValue: '1' },
+        { checkName: '内存', checkValue: '2' }
       ],
-      checklist: [{ checkName: 'CPU', checkValue: '1' },
-        { checkName: '内存', checkValue: '2' }],
-      input: '',
-      tableData: [{
+      downrankingList: [{
         index: '1',
         tit: '《大数据工程师必读手册工程师必读 手册》',
         number: '89999'
@@ -125,8 +158,24 @@ export default {
       ]
     }
   },
+  async mounted() {
+    /* this.getFirmList()
+    this.getKownrankingList()
+    await this.getCheckList()
+    await this.fetchTableData()*/
+  },
   methods: {
+    // 获取厂商列表
+    getFirmList() {
+      this.checklist = getFirmList()
+    },
+    // 根据厂商获取分类
     getCheckList() {
+      this.checklist = getCheckList(this.query.contents.firmValue)
+    },
+    // 下载排行
+    getKownrankingList() {
+      this.downrankingList = getKownrankingList()
     },
     // 获取表格数据
     async handleDriverForm() {
@@ -139,7 +188,7 @@ export default {
         _item.customParams = undefined
         _item.expandLoading = false
       }
-      this.query = { page: page + 1, total, size, contents }
+      this.tableData = { page: page + 1, total, size, contents }
     },
     // 处理页面pagesize变化
     handleSizeChange(val) {

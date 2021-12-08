@@ -10,7 +10,7 @@ export function getUploadDriverList(data) {
 
 export function getUploadDriver(id) {
   return request({
-    url: '/drivere/${id}',
+    url: '/driver/${id}',
     method: 'get'
   })
 }
@@ -19,5 +19,25 @@ export function getUploadDriverListByQuery(data) {
     url: `/driver/upload/list`,
     method: 'post',
     data
+  })
+}
+
+export function getCheckList(firmId) {
+  return request({
+    url: `/driver/classify/${firmId}`,
+    method: 'get'
+  })
+}
+export function getKownrankingList() {
+  return request({
+    url: `/driver/KownrankingList`,
+    method: 'get'
+  })
+}
+
+export function getFirmList() {
+  return request({
+    url: `/driver/FirmList`,
+    method: 'get'
   })
 }
