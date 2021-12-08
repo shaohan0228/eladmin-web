@@ -15,7 +15,7 @@ import { filterAsyncRouter } from '@/store/modules/permission'
 NProgress.configure({ showSpinner: false })// NProgress Configuration
 
 // eslint-disable-next-line no-unused-vars
-const whiteList = ['/login']// no redirect whitelist
+const whiteList = ['/login', '/']// no redirect whitelist
 // const requireLoginPagePrefix = '/manage'
 
 router.beforeEach((to, from, next) => {
@@ -26,7 +26,7 @@ router.beforeEach((to, from, next) => {
 
   if (getToken()) {
     if (to.path === '/login') {
-      next({ path: '/' })
+      next()
       NProgress.done()
     } else {
       if (store.getters.constantsMenuLoad) {

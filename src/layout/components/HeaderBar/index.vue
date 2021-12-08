@@ -1,6 +1,6 @@
 <template>
   <el-header class="header-bar" height="60px">
-    <div class="nav-bar flex-auto flex justify-between items-center h-full">
+    <div class="nav-bar flex-auto flex justify-between items-center h-full" :class="{'is-compact': compact}">
       <router-link to="/">
         <img v-if="logo" :src="logo" class="logo" alt="logo">
       </router-link>
@@ -12,26 +12,29 @@
       >
         <head-bar-menu-item v-for="route in sidebarRouters" :key="route.path" :item="route" :base-path="route.path" />
       </el-menu>
-      <div class="flex flex-row flex-wrap align-middle">
-        <ita-button>账号登录</ita-button>
-        <ita-button type="primary">账号注册</ita-button>
-      </div>
+      <HeaderBarUserInfo />
     </div>
   </el-header>
 </template>
 
 <script>
 import Logo from '@/assets/images/logo.png'
-import ItaButton from '@/components/ItaButton'
 import HeadBarMenuItem from './HeadBarMenuItem'
 import { mapGetters } from 'vuex'
 import variables from '@/assets/styles/variables.scss'
+import HeaderBarUserInfo from '../../../components/HeaderBarUserInfo'
 
 export default {
   name: 'HeaderBar',
   components: {
-    ItaButton,
+    HeaderBarUserInfo,
     HeadBarMenuItem
+  },
+  props: {
+    compact: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -76,7 +79,9 @@ export default {
   }
   .nav-bar {
     @apply m-auto;
-    max-width: 1200px;
+    &.is-compact {
+      max-width: 1200px;
+    }
   }
 
   // 设置选中的菜单没有颜色

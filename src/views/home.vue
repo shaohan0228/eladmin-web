@@ -4,22 +4,34 @@
       <div class="logo">
         <img src="../assets/images/logo4.png" height="92" alt="">
       </div>
-      <div class="home-h-right">
-        <el-button class="common-btn ydloginbtn" round icon="el-icon-user-solid" @click="toLogin">登录</el-button>
+      <div class="home-h-right ">
+        <el-button v-if="!isLogin" class="common-btn ydloginbtn" round icon="el-icon-user-solid" @click="toLogin">登录</el-button>
         <!--        <el-button class="common-btn ydregbtn" type="primary" round el-icon-edit>注册</el-button>-->
-        <!-- <el-dropdown>
+        <el-dropdown v-if="isLogin">
           <span class="el-dropdown-link">
-            18323562356<i class="el-icon-arrow-down el-icon--right"></i>
+            18323562356<i class="el-icon-arrow-down el-icon--right" />
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>账号信息</el-dropdown-item>
-            <el-dropdown-item>消息中心</el-dropdown-item>
-            <el-dropdown-item>问题管理</el-dropdown-item>
-            <el-dropdown-item>工单管理</el-dropdown-item>
-            <el-dropdown-item>上传中心</el-dropdown-item>
-            <el-dropdown-item divided>退出登录</el-dropdown-item>
+            <router-link to="user/center">
+              <el-dropdown-item>账号信息</el-dropdown-item>
+            </router-link>
+            <router-link to="messages">
+              <el-dropdown-item>消息中心</el-dropdown-item>
+            </router-link>
+            <router-link v-if="userRole === 'user'" to="question/list">
+              <el-dropdown-item>问题管理</el-dropdown-item>
+            </router-link>
+            <router-link v-if="userRole === 'company'" to="question/list">
+              <el-dropdown-item>工单管理</el-dropdown-item>
+            </router-link>
+            <router-link v-if="userRole === 'company'" to="question/list">
+              <el-dropdown-item>上传中心</el-dropdown-item>
+            </router-link>
+            <span style="display:block;" @click="logout">
+              <el-dropdown-item divided>退出登录</el-dropdown-item>
+            </span>
           </el-dropdown-menu>
-        </el-dropdown> -->
+        </el-dropdown>
       </div>
     </div>
     <div class="home-con ptop190">
@@ -29,9 +41,15 @@
             <div class="before"><div style="margin-top:145px;">运维平台</div></div>
             <div class="after">
               <ul class="home-yw">
-                <li><i class="el-icon-search mright10" />知识查询</li>
-                <li><i class="el-icon-video-play mright10" />视频学习</li>
-                <li><i class="el-icon-download mright10" />驱动下载</li>
+                <router-link to="resources/knowledge">
+                  <li><i class="el-icon-search mright10" />知识查询</li>
+                </router-link>
+                <router-link to="resources/videos">
+                  <li><i class="el-icon-video-play mright10" />视频学习</li>
+                </router-link>
+                <router-link to="resources/drivers">
+                  <li><i class="el-icon-download mright10" />驱动下载</li>
+                </router-link>
               </ul>
             </div>
           </li>
@@ -64,8 +82,7 @@
             </div>
           </li>
           <li class="mright40">
-            <div class="before"><div style="margin-top:145px;">外设适配器查询</div>
-            </div>
+            <div class="before"><div style="margin-top:145px;">外设适配器查询</div></div>
             <div class="after">
               <ul class="home-yw" style="margin-top:30px;">
                 <li>
@@ -84,7 +101,9 @@
             </div>
           </li>
           <li>
-            <div style="margin-top:145px;">问题反馈</div>
+            <router-link to="question/feedback">
+              <div style="margin-top:145px;">问题反馈</div>
+            </router-link>
           </li>
         </ul>
       </div>
@@ -93,21 +112,17 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { getToken } from '../utils/auth'
 
 export default {
   data() {
     return {
-      isLogin: false
+      isLogin: false,
+      userRole: ''
     }
   },
-  computed: {
-    ...mapGetters([
-      'sqlApi'
-    ])
-  },
   mounted() {
-
+    this.isLogin = getToken() && true
   },
   methods: {
     toLogin() {
@@ -115,6 +130,13 @@ export default {
     },
     toRegister() {
       this.$router.push({ path: '/register' })
+    },
+    logout() {
+      this.$store.dispatch('LogOut').then(() => {
+        location.reload()
+      }).catch(() => {
+        location.reload()
+      })
     }
   }
 }
@@ -126,7 +148,7 @@ export default {
   .home-h{height:80px;width:100%;background: #fff;}
   .logo{display: inline-block;margin: 10px 0 10px 50px;}
   img, video {max-width: 65%;height: auto;}
-  .el-dropdown{margin-right:50px;height: 40px;line-height: 40px;margin-top: 20px;cursor: pointer;}
+  .el-dropdown{height: 40px;line-height: 40px;cursor: pointer;}
   .el-dropdown-menu__item:focus, .el-dropdown-menu__item:not(.is-disabled):hover{background-color: #ffe7e9;color: #ca1824;}
   .home-con{width: 100%;min-height: 1000px;background: url(../assets/images/indexbg.png);background-repeat: no-repeat;background-position: left center;background-size: 100% 100%;box-sizing: border-box;}
   .home-h-right{float: right;margin: 22px 50px;}

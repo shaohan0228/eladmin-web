@@ -1,7 +1,7 @@
 <template>
   <div :class="classObj" class="app-wrapper">
     <!--    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />-->
-    <header-bar :compact="true" />
+    <header-bar />
     <app-main />
     <!--  防止刷新后主题丢失  -->
     <Theme v-show="false" ref="theme" />
@@ -16,7 +16,7 @@ import { mapState } from 'vuex'
 import Theme from '@/components/ThemePicker'
 import Cookies from 'js-cookie'
 export default {
-  name: 'CompactLayout',
+  name: 'StretchLayout',
   components: {
     AppMain,
     Theme,

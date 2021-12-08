@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '../layout/index'
+import BackendLayout from '../layout/StretchLayout'
 
 Vue.use(Router)
 
@@ -39,7 +40,7 @@ export const constantRouterMap = [
   },
   {
     path: '/user',
-    component: Layout,
+    component: BackendLayout,
     hidden: true,
     redirect: 'noredirect',
     children: [
@@ -80,7 +81,9 @@ export const constantRouterMap = [
     children: [
       {
         path: '',
-        component: () => import('@/views/news')
+        component: () => import('@/views/question/feedback'),
+        hidden: true,
+        meta: { title: '问题反馈' }
       }
     ]
   },
@@ -151,7 +154,7 @@ export const constantRouterMap = [
   },
   {
     path: '/upload_manage',
-    component: Layout,
+    component: BackendLayout,
     name: 'UploadManageLayout',
     meta: { title: '上传管理' },
     hidden: true,
@@ -208,7 +211,7 @@ export const constantRouterMap = [
   },
   {
     path: '/workorder',
-    component: Layout,
+    component: BackendLayout,
     hidden: true,
     children: [
       {
@@ -227,7 +230,7 @@ export const constantRouterMap = [
   },
   {
     path: '/question',
-    component: Layout,
+    component: BackendLayout,
     hidden: true,
     children: [
       {
@@ -241,12 +244,6 @@ export const constantRouterMap = [
         component: () => import('@/views/question/questionList'),
         hidden: true,
         meta: { title: '问题列表' }
-      },
-      {
-        path: 'feedback',
-        component: () => import('@/views/question/feedback'),
-        hidden: true,
-        meta: { title: '问题反馈' }
       }
     ]
   },
