@@ -34,9 +34,11 @@
 
 <script>
 import { getToken } from '@/utils/auth'
+import ItaButton from '@/components/ItaButton'
 
 export default {
   name: 'HeaderBarUserInfo',
+  components: { ItaButton },
   data() {
     return {
       isLogin: false,
