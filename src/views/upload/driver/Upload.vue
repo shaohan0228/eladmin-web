@@ -3,12 +3,12 @@
     <div class="main-tit">上传驱动</div>
     <div class="main-content">
       <!--表单组件-->
-      <el-form ref="uplaodForm" size="small" :model="uplaodForm" :rules="rules" label-width="100px">
+      <el-form ref="uploadForm" size="small" :model="uploadForm" :rules="rules" label-width="100px">
         <el-form-item label="驱动标题" prop="driverName">
-          <el-input v-model="uplaodForm.driverName" style="width: 670px" placeholder="请输入驱动标题" />
+          <el-input v-model="uploadForm.driverName" style="width: 670px" placeholder="请输入驱动标题" />
         </el-form-item>
         <el-form-item label="驱动链接" prop="driverPath">
-          <el-input v-model="uplaodForm.driverPath" :value="imageURL" style="width: 670px" placeholder="请输入驱动下载链接" />
+          <el-input v-model="uploadForm.driverPath" :value="imageURL" style="width: 670px" placeholder="请输入驱动下载链接" />
           <el-upload
             ref="upload"
             :limit="1"
@@ -24,7 +24,7 @@
           </el-upload>
         </el-form-item>
         <el-form-item label="驱动简介" prop="driverIntroduction">
-          <el-input v-model="uplaodForm.driverIntroduction" :rows="5" type="textarea" style="width: 670px;" placeholder="请输入简介" />
+          <el-input v-model="uploadForm.driverIntroduction" :rows="5" type="textarea" style="width: 670px;" placeholder="请输入简介" />
         </el-form-item>
         <el-form-item label="关联功能" prop="driverConnection">
           <el-cascader
@@ -52,7 +52,7 @@ export default {
   name: 'DriverUpload',
   data() {
     return {
-      uplaodForm: { driverName: '', driverPath: '', driverIntroduction: '', driverConnection: '' },
+      uploadForm: { driverName: '', driverPath: '', driverIntroduction: '', driverConnection: '' },
       fileList: [],
       imageURL: '',
       options: [{

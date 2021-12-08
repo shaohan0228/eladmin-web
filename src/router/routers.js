@@ -114,7 +114,7 @@ export const constantRouterMap = [
       },
       {
         path: 'drivers',
-        component: () => import('@/views/news'),
+        component: () => import('@/views/resources/drivers'),
         name: 'Drivers',
         meta: { title: '驱动下载', icon: 'el-icon-s-platform' }
       },

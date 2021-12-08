@@ -2,7 +2,7 @@
 * @Author: Administrator
 * @Date:   2021-12-06 12:47:09
 * @Last Modified by:   Administrator
-* @Last Modified time: 2021-12-06 16:54:26
+* @Last Modified time: 2021-12-07 12:22:48
 */
 html{color:#333;background:#fff;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
 body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td, hr, button, article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { margin:0;padding:0}
@@ -34,19 +34,79 @@ input:focus{outline:none;}
 .pull-right{float: right;}
 .common-btn{background-color: #ca1824;border-color: #ca1824;}
 .common-btn:hover{background-color: #ca1824;border-color: #ca1824;opacity: 0.8;}
-.mbottom30{margin-bottom: 30px;}
+.fsize12{font-size: 12px;}
 .fsize14{font-size: 14px;}
+.fsize18{font-size: 18px;}
 .gfff{color: #fff;}
 .g666{color: #666;}
 .g999{color: #999;}
 .g333{color: #333;}
+.g1e7bf4{color: #1e7bf4;}
 .text-right{text-align: right;}
 .text-center{text-align: center;}
 .text-left{text-align: left;}
 .d-inline{display: inline-block;}
-.mright15{margin-right: 15px;}
 .w1360{width: 1360px;min-width: 1360px;margin: 0 auto;}
-.ptop190{padding-top: 190px;}
+.mtop10{margin-top: 10px;}
+.mtop15{margin-top: 15px;}
+.mtop20{margin-top: 20px;}
+.mtop40{margin-top: 40px;}
+.mbottom0{margin-bottom:0px;}
+.mbottom10{margin-bottom: 10px;}
+.mbottom30{margin-bottom: 30px;}
+.mright15{margin-right: 15px;}
 .mright40{margin-right: 40px;}
+.mright50{margin-right: 50px;}
 .mright10{margin-right: 10px;}
+.mright30{margin-right: 30px;}
 span{display: inline-block;}
+.padd20{padding: 20px;}
+.ptop190{padding-top: 190px;}
+.p-left60{padding-left: 60px;}
+.ba2F489C{background: #2F489C;}
+.baFF8E3D{background: #FF8E3D;}
+.ba67c23a{background:#67c23a;}
+.redborderbtn{background-color: #fff;border-color: #ca1824;color: #ca1824;}
+.redborderbtn:hover{background: #ffe7e9;color: #ca1824;}
+.ydloginbtn:active,.ydloginbtn:focus{background: #ffe7e9;color: #ca1824;border-color:#ca1824;}
+.el-button--primary.is-active, .el-button--primary:active{background: #ca1824;border-color: #ca1824;}
+.el-button:active,.el-button:focus{background: #ffe7e9;color: #ca1824;border-color:#ca1824;}
+.el-button:hover{border-color:#ca1824;}
+.el-button:focus, .el-button:hover{color: #ca1824;border-color: #ca1824;background-color: #ffe7e9;}
+.redbtn{background-color: #ca1824;border-color: #ca1824;color: #fff;}
+.redbtn:hover,.redbtn:active,.redbtn:focus{background-color: #ca1824;border-color: #ca1824;color: #fff;opacity: 0.8;}
+.el-tabs__item:hover,.el-tabs__item.is-active{color: #ca1824;}
+.el-input.is-active .el-input__inner, .el-input__inner:focus,.el-textarea__inner:focus{border-color: #ca1824;}
+.el-button--text:active,.el-button--text:focus,.el-button--text:hover{border: 0;color: #409EFF;background: none;opacity: 0.8;}
+.el-button--text{border: 0;}
+.w70{width: 70%;}
+.el-result .icon-success{width: 30px;height: 30px;}
+.el-result__icon{display: inline-block;float: left;}
+.el-result__title{float: left;margin-top: 0px;}
+.border{border:1px solid #ca1824;}
+.gred{color: #ca1824;}
+.fw{font-weight: bold;}
+.p-left28{padding-left:28px;}
+/* 公共头部导航 */
+.web-header{width: 100%;background: #fff;height: 60px;}
+.w1200{width: 1200px;min-width: 1200px;margin: 0 auto;}
+.web-header .logo{display: inline-block;float: left;height: 60px;}
+.el-menu--horizontal>.el-menu-item.is-active{border-bottom: 2px solid #ca1824;color: #ca1824;}
+.el-menu--horizontal .el-menu-item:not(.is-disabled):focus, .el-menu--horizontal .el-menu-item:not(.is-disabled):hover{color: #ca1824;}
+.el-menu.el-menu--horizontal{border-bottom: 0;}
+.el-menu--popup{min-width: 110px;}
+.home-h-right{display: inline-block;float: right;}
+/* banner */
+.banner{width: 100%;min-width: 1200px;height: 400px;}
+/* foot */
+.foot{width: 100%;min-width: 1200px;background: #f3f3f3;height: 390px;padding-top:70px;box-sizing:border-box;}
+.foot-item{width:200px;float: left;}
+.f-tit{font-size: 18px;color: #333;margin-bottom: 10px;}
+.f-link{cursor: pointer;margin-top: 10px;font-size: 14px;color: #666;}
+.f-link:hover{color:#ca1824;}
+.foot-top{border-bottom: 1px solid #ddd;padding-bottom: 20px;}
+/* 多选框样式修改成红色 */
+.el-checkbox__input.is-focus .el-checkbox__inner,.el-checkbox__inner:hover{border-color: #ca1824!important;}
+.el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner{background-color: #ca1824;border-color: #ca1824;}
+.el-checkbox__input.is-checked+.el-checkbox__label{color: #ca1824;}
+.w600{width: 600px;}

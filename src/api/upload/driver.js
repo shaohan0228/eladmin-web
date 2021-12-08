@@ -14,3 +14,10 @@ export function getUploadDriver(id) {
     method: 'get'
   })
 }
+export function getUploadDriverListByQuery(data) {
+  return request({
+    url: `/driver/upload/list`,
+    method: 'post',
+    data
+  })
+}
