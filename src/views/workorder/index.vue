@@ -116,6 +116,7 @@ export default {
     const { params } = this.$route
     this.id = params.id
   },
+  mounted() {},
   methods: {
     receivingOrder() {
       console.log('接收工单' + this.id)

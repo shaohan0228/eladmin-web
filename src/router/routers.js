@@ -98,6 +98,18 @@ export const constantRouterMap = [
         meta: { title: '知识查询', icon: 'tree' }
       },
       {
+        path: 'knowledge/:id/details',
+        component: () => import('@/views/news/details'),
+        name: 'KnowledgeDetails',
+        meta: { title: '知识详情', icon: 'tree' }
+      },
+      {
+        path: 'knowledge/list',
+        component: () => import('@/views/news/list'),
+        name: 'KnowledgeList',
+        meta: { title: '知识列表', icon: 'tree' }
+      },
+      {
         path: 'videos',
         component: () => import('@/views/resources/videoList'),
         name: 'Videos',

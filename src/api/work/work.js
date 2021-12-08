@@ -10,7 +10,7 @@ export function getWorkOrderList(data) {
 
 export function getWorkOrderDetails(id) {
   return request({
-    url: '/knowledge/${id}',
+    url: '/workorder/workorderDetails/${id}',
     method: 'get'
   })
 }

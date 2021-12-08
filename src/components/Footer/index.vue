@@ -37,7 +37,9 @@
       </div>
       <div class="foot-b">
         <div class="fsize12 g666 mtop20">公司地址:河南省郑州市郑东新区企业联合大厦·豫发中心13层</div>
-        <div class="fsize12 g666 mtop10">©2021年河南省信创综合服务保障中心版权所有备案证号：豫ICP备18011154号</div>
+        <div class="fsize12 g666 mtop10">©2021年河南省信创综合服务保障中心版权所有备案证号：
+          <a class="g666" href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank">豫ICP备18011154号</a>
+        </div>
       </div>
     </div>
   </div>
