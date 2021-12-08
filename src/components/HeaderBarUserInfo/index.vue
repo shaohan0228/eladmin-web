@@ -9,19 +9,19 @@
         18323562356<i class="el-icon-arrow-down el-icon--right" />
       </span>
       <el-dropdown-menu slot="dropdown">
-        <router-link to="user/center">
+        <router-link to="/user/center">
           <el-dropdown-item>账号信息</el-dropdown-item>
         </router-link>
-        <router-link to="messages">
+        <router-link to="/messages">
           <el-dropdown-item>消息中心</el-dropdown-item>
         </router-link>
-        <router-link to="question/list">
+        <router-link to="/question/list">
           <el-dropdown-item>问题管理</el-dropdown-item>
         </router-link>
-        <router-link to="question/list">
+        <router-link to="/workorder/list">
           <el-dropdown-item>工单管理</el-dropdown-item>
         </router-link>
-        <router-link to="question/list">
+        <router-link to="/upload_manage">
           <el-dropdown-item>上传中心</el-dropdown-item>
         </router-link>
         <span style="display:block;" @click="logout">

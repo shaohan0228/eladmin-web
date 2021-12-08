@@ -1,80 +1,78 @@
 <template>
-  <div class="workorder">
-    <el-container>
-      <el-container>
-        <el-aside width="160px" class="workorder-menu">
-          <div class="menu-tit">工单管理</div>
-          <div>
-            <el-menu>
-              <el-menu-item index="1">
-                <span slot="title">工单列表</span>
-              </el-menu-item>
-            </el-menu>
-          </div>
-        </el-aside>
-        <el-main class="workorder-main">
-          <div class="main-con">
-            <div class="main-tit">工单管理</div>
-            <div class="padd20">
-              <el-tabs v-model="activeName" type="card">
-                <el-tab-pane label="全部工单" name="first">
-                  <div class="tab-con">
-                    <div class="table-top">
-                      <el-input
-                        v-model="query.blurry"
-                        placeholder="请输入搜索的标题和内容"
-                        style="width:200px;"
-                        @keyup.enter.native="fetchTableData"
-                      />
-                      <el-button class="redbtn" icon="el-icon-search" @click="fetchTableData">搜索</el-button>
-                    </div>
-                    <el-table
-                      ref="tableRef"
-                      v-loading="loading"
-                      :data="tableData.contents"
-                      highlight-current-row
-                      style="width: 100%"
-                      class="mt-6"
-                    >
-                      <el-table-column prop="number" label="工单编号" />
-                      <el-table-column prop="title" label="工单标题" />
-                      <el-table-column prop="state" label="状态">
-                        <template v-slot:default="scope">
-                          <el-tag v-if="scope.row.state == 1" type="warning">待受理</el-tag>
-                          <el-tag v-else-if="scope.row.state == 2" type="warning">处理中</el-tag>
-                          <el-tag v-else-if="scope.row.state == 3" type="success">已处理</el-tag>
-                          <el-tag v-else type="warning">未知</el-tag>
-                        </template>
-                      </el-table-column>
-                      <el-table-column prop="receiveTime" label="接收时间" />
-                      <el-table-column prop="finishTime" label="结束时间" />
-                      <el-table-column prop="operation" label="操作">
-                        <template v-slot:default="scope">
-                          <el-button type="text" size="small" @click="toDetails(scope.row)">详情</el-button>
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                    <el-pagination
-                      layout="total, sizes, prev, pager, next, jumper"
-                      class="text-right mt-6"
-                      :page-sizes="[10, 20, 30, 40]"
-                      :total="tableData.total"
-                      :page-size="tableData.size"
-                      :current-page="tableData.page"
-                      @size-change="handleSizeChange"
-                      @current-change="handleCurrentChange"
-                    />
-                  </div>
-                </el-tab-pane>
-                <el-tab-pane label="待受理" name="second">待受理</el-tab-pane>
-                <el-tab-pane label="已处理" name="third">已处理</el-tab-pane>
-              </el-tabs>
-            </div>
-          </div>
-        </el-main>
-      </el-container>
-    </el-container>
-  </div>
+  <el-container class="workorder">
+    <el-aside width="160px" class="workorder-menu">
+      <div class="menu-tit">工单管理</div>
+      <div>
+        <el-menu>
+          <router-link to="/workorder/list">
+            <el-menu-item index="1">
+              <span slot="title" @click="workOrder">工单列表</span>
+            </el-menu-item>
+          </router-link>
+        </el-menu>
+      </div>
+    </el-aside>
+    <el-main class="workorder-main">
+      <div class="main-con">
+        <div class="main-tit">工单管理</div>
+        <div class="padd20">
+          <el-tabs v-model="activeName" type="card">
+            <el-tab-pane label="全部工单" name="first">
+              <div class="tab-con">
+                <div class="table-top">
+                  <el-input
+                    v-model="query.blurry"
+                    placeholder="请输入搜索的标题和内容"
+                    style="width:200px;"
+                    @keyup.enter.native="fetchTableData"
+                  />
+                  <el-button class="redbtn" icon="el-icon-search" @click="fetchTableData">搜索</el-button>
+                </div>
+                <el-table
+                  ref="tableRef"
+                  v-loading="loading"
+                  :data="tableData.contents"
+                  highlight-current-row
+                  style="width: 100%"
+                  class="mt-6"
+                >
+                  <el-table-column prop="number" label="工单编号" />
+                  <el-table-column prop="title" label="工单标题" />
+                  <el-table-column prop="state" label="状态">
+                    <template v-slot:default="scope">
+                      <el-tag v-if="scope.row.state == 1" type="warning">待受理</el-tag>
+                      <el-tag v-else-if="scope.row.state == 2" type="warning">处理中</el-tag>
+                      <el-tag v-else-if="scope.row.state == 3" type="success">已处理</el-tag>
+                      <el-tag v-else type="warning">未知</el-tag>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="receiveTime" label="接收时间" />
+                  <el-table-column prop="finishTime" label="结束时间" />
+                  <el-table-column prop="operation" label="操作">
+                    <template v-slot:default="scope">
+                      <el-button type="text" size="small" @click="toDetails(scope.row)">详情</el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <el-pagination
+                  layout="total, sizes, prev, pager, next, jumper"
+                  class="text-right mt-6"
+                  :page-sizes="[10, 20, 30, 40]"
+                  :total="tableData.total"
+                  :page-size="tableData.size"
+                  :current-page="tableData.page"
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                />
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="待受理" name="second">待受理</el-tab-pane>
+            <el-tab-pane label="已处理" name="third">已处理</el-tab-pane>
+          </el-tabs>
+        </div>
+      </div>
+    </el-main>
+  </el-container>
 </template>
 <script>
 import { getWorkOrderList } from '@/api/work/work'
@@ -192,7 +190,7 @@ export default {
   //@import url("https://unpkg.com/element-ui/lib/theme-chalk/index.css");
   @import "../../assets/styles/common.css";
   html,body{width: 100%;height: 100%;min-height: 100%;min-height: 100vh;background: #f8f8f8;}
-  .el-container{width: 100%;min-height: 80%;min-height: 80vh;}
+  .el-container{width: 100%;min-height: calc(100vh - 60px);}
   .workorder-h{background: #ffffff;box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.10);width: 100%;height: 60px;z-index: 10;position: relative;}
   .logo1{margin: 10px;}
   .logo2{margin: 18px 0;}

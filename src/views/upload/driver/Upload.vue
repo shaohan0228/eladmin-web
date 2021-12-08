@@ -3,9 +3,9 @@
     <div class="main-tit">驱动上传</div>
     <div class="main-content">
       <!--表单组件-->
-      <el-form ref="uplaodForm" size="small" :model="uplaodForm" :rules="rules" label-width="100px">
+      <el-form ref="uploadForm" size="small" :model="uploadForm" :rules="rules" label-width="100px">
         <el-form-item label="驱动标题" prop="driverName">
-          <el-input v-model="uplaodForm.driverName" style="width: 670px" placeholder="请输入驱动标题" />
+          <el-input v-model="uploadForm.driverName" style="width: 670px" placeholder="请输入驱动标题" />
         </el-form-item>
         <el-form-item label="驱动链接" prop="driverPath">
           <el-input v-model="uploadForm.driverPath" :value="imageURL" style="width: 670px" placeholder="请输入驱动下载链接" />

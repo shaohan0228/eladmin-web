@@ -1,5 +1,5 @@
 <template>
-  <div class="ita-side-bar">
+  <el-aside :width="variables.sideBarWidth" class="ita-side-bar m-0 p-0">
     <div v-if="barTitle" class="ita-sidebar-title">
       {{ barTitle }}
     </div>
@@ -20,7 +20,7 @@
         </div>
       </el-submenu>
     </el-menu>
-  </div>
+  </el-aside>
 </template>
 <script>
 import path from 'path'
@@ -111,15 +111,6 @@ export default {
 @import "~@/assets/styles/variables.scss";
 
 .ita-side-bar {
-  width: $sideBarWidth;
-  height: 100%;
-  position: fixed;
-  top: $headerBarHeight;
-  bottom: 0;
-  left: 0;
-  overflow: hidden;
-  padding-left: 10px;
-  padding-right: 10px;
   background: #ffffff;
 
   .ita-sidebar-title {

@@ -7,24 +7,25 @@
  * @FilePath: \eladmin-web\src\views\upload\index.vue
 -->
 <template>
-  <div>
+  <el-container class="upload-main-container">
     <ita-side-bar
       bar-title="上传管理"
       :router-name="routerRootName"
       :root-routers="$store.state.permission.routers"
     />
-    <div class="sub-container">
+    <div class="sub-container w-full">
       <keep-alive :include="cachedViews">
         <router-view :key="key" />
       </keep-alive>
     </div>
-  </div>
+  </el-container>
 </template>
 
 <script>
 import path from 'path'
 import { isExternal } from '@/utils/validate'
 import ItaSideBar from './ItaSideBar'
+import variables from '@/assets/styles/variables.scss'
 
 export default {
   components: {
@@ -48,6 +49,9 @@ export default {
     },
     key() {
       return this.$route.path
+    },
+    variables() {
+      return variables
     }
   },
   created() {
@@ -92,11 +96,16 @@ export default {
 
 <style scoped lang="scss">
 @import "~@/assets/styles/variables.scss";
+
+.upload-main-container {
+  min-height: calc(100vh - 60px);
+}
+
 .sub-container {
-  margin-left: $sideBarWidth;
+  //margin-left: $sideBarWidth;
   padding: 20px;
   background: #f8f8f8;
-  height: calc(100vh - 60px);
+  //height: calc(100vh - 60px);
 
   .content-container {
     width: 100%;

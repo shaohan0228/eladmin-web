@@ -76,7 +76,8 @@ service.interceptors.response.use(
         } else if (code === 403) {
           router.push({ path: '/401' })
         } else {
-          const errorMsg = error.response.data.message
+          let errorMsg = error.response.data.message
+          errorMsg = errorMsg === 'No message available' ? '服务不可用' : errorMsg
           if (errorMsg !== undefined) {
             Notification.error({
               title: errorMsg,
