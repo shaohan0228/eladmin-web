@@ -16,7 +16,7 @@ NProgress.configure({ showSpinner: false })// NProgress Configuration
 
 // eslint-disable-next-line no-unused-vars
 const whiteList = ['/login']// no redirect whitelist
-const requireLoginPagePrefix = '/manage'
+// const requireLoginPagePrefix = '/manage'
 
 router.beforeEach((to, from, next) => {
   if (to.meta.title) {
@@ -24,21 +24,42 @@ router.beforeEach((to, from, next) => {
   }
   NProgress.start()
 
-  // 如果访问的是后台页面
-  if (to.path.startsWith(requireLoginPagePrefix)) {
-    if (getToken()) { // 如果已经登陆了
-      next()
-    } else { // 如果没有登陆，就跳转到登陆页面
-      next(`/login?redirect=${to.fullPath}`) // 否则全部重定向到登录页
+  if (getToken()) {
+    if (to.path === '/login') {
+      next({ path: '/' })
+      NProgress.done()
+    } else {
+      if (store.getters.constantsMenuLoad) {
+        next()
+      } else {
+        loadMenus(next, to)
+      }
     }
   } else {
-    if (store.getters.constantsMenuLoad) {
+    /* has no token*/
+    if (whiteList.indexOf(to.path) !== -1) { // 在免登录白名单，直接进入
       next()
     } else {
-      loadMenus(next, to)
+      next(`/login?redirect=${to.fullPath}`) // 否则全部重定向到登录页
+      NProgress.done()
     }
   }
-  NProgress.done()
+
+  // 如果访问的是后台页面 测试时使用的方法
+  // if (to.path.startsWith(requireLoginPagePrefix)) {
+  //   if (getToken()) { // 如果已经登陆了
+  //     next()
+  //   } else { // 如果没有登陆，就跳转到登陆页面
+  //     next(`/login?redirect=${to.fullPath}`) // 否则全部重定向到登录页
+  //   }
+  // } else {
+  //   if (store.getters.constantsMenuLoad) {
+  //     next()
+  //   } else {
+  //     loadMenus(next, to)
+  //   }
+  // }
+  // NProgress.done()
 })
 
 // 如果后台可以动态加载菜单，请使用下面的代码

@@ -1,73 +1,79 @@
 <template>
-  <div class="login" :style="'background-image:url('+ Background +');'">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left" label-width="0px" class="login-form">
-      <h3 class="title">
-        EL-ADMIN 后台管理系统
-      </h3>
-      <el-form-item prop="username">
-        <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
-          <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
-        </el-input>
-      </el-form-item>
-      <el-form-item prop="password">
-        <el-input v-model="loginForm.password" type="password" auto-complete="off" placeholder="密码" @keyup.enter.native="handleLogin">
-          <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
-        </el-input>
-      </el-form-item>
-      <el-form-item prop="code">
-        <el-input v-model="loginForm.code" auto-complete="off" placeholder="验证码" style="width: 63%" @keyup.enter.native="handleLogin">
-          <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
-        </el-input>
-        <div class="login-code">
-          <img :src="codeUrl" @click="getCode">
+  <div class="login">
+    <div class="login-header">
+      <img class="logo1 pull-left" src="../assets/images/logo1.png" height="40" width="40" alt="">
+      <span class="fsize18 fw mtop15">河南省信创综合服务保障中心</span>
+    </div>
+    <div class="login-con">
+      <div v-if="qrCodeLoginSupport" class="code" @click="show=false">
+        <!-- 点击二#维码图，扫码页面显示，在此先隐藏 -->
+        <a class="codebtn codeimg" href="" />
+        <div class="saodiv">
+          <div class="login-tit">用户登录</div>
+          <!-- 点击下面这个电脑图，扫码这块隐藏 -->
+          <a class="codebtn codeimgwin" href="" />
+          <div class="clearfix mbottom30"><img
+            style="margin:0 auto;display:block;"
+            src="images/sao.png"
+            height="180"
+            width="180"
+            alt=""
+          ></div>
+          <div class="clearfix text-center">
+            <span class="clearfix d-inline">
+              <img class="pull-left mright15" src="images/saosao.png" height="20" width="20" alt="">
+              <span class="fsize14 g666 pull-left">打开微信扫一扫登录</span>
+            </span>
+          </div>
+          <div class="saodiv-b">
+            还没有账号？<a href="">立即注册</a>
+          </div>
         </div>
-      </el-form-item>
-      <el-checkbox v-model="loginForm.rememberMe" style="margin:0 0 25px 0;">
-        记住我
-      </el-checkbox>
-      <el-form-item style="width:100%;">
-        <el-button :loading="loading" size="medium" type="primary" style="width:100%;" @click.native.prevent="handleLogin">
-          <span v-if="!loading">登 录</span>
-          <span v-else>登 录 中...</span>
-        </el-button>
-      </el-form-item>
-    </el-form>
-    <!--  底部  -->
-    <div v-if="$store.state.settings.showFooter" id="el-login-footer">
-      <span v-html="$store.state.settings.footerTxt" />
-      <span> ⋅ </span>
-      <a href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank">{{ $store.state.settings.caseNumber }}</a>
+      </div>
+      <div class="login-tit">用户登录</div>
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form-item prop="loginname">
+          <el-input v-model="form.loginname" placeholder="手机号码" @keyup.enter.native="login" />
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input v-model="form.password" placeholder="登录密码" @keyup.enter.native="login" />
+        </el-form-item>
+        <!--        <div class="clearfix mbottom30">-->
+        <!--          <a class="fsize14 pull-left" href="" @click="toRegister">注册账号</a>-->
+        <!--          <a class="fsize14 pull-right" href="" @click="toForgetPwd">忘记密码</a>-->
+        <!--        </div>-->
+        <el-form-item>
+          <el-button type="primary" class="common-btn login-btn" @click.native.prevent="login">登录</el-button>
+        </el-form-item>
+      </el-form>
     </div>
   </div>
 </template>
 
 <script>
-import { encrypt } from '@/utils/rsaEncrypt'
-import Config from '@/settings'
-import { getCodeImg } from '@/api/login'
-import Cookies from 'js-cookie'
+import { Notification } from 'element-ui'
 import qs from 'qs'
-import Background from '@/assets/images/background.jpg'
+
 export default {
   name: 'Login',
-  data() {
+  data: function() {
     return {
-      Background: Background,
-      codeUrl: '',
-      cookiePass: '',
-      loginForm: {
-        username: 'admin',
-        password: '123456',
-        rememberMe: false,
-        code: '',
-        uuid: ''
+      qrCodeLoginSupport: false,
+      visible: false,
+      form: {
+        loginname: 'afaff',
+        password: '1'
       },
-      loginRules: {
-        username: [{ required: true, trigger: 'blur', message: '用户名不能为空' }],
-        password: [{ required: true, trigger: 'blur', message: '密码不能为空' }],
-        code: [{ required: true, trigger: 'change', message: '验证码不能为空' }]
+      rules: {
+        loginname: [
+          { required: true, message: '请输入手机号码', trigger: 'blur' }
+          // { len: 8, message: '请输入正确的手机号码', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' }
+          // { min: 6, max: 20, message: '密码长度为6到20位', trigger: 'blur' }
+        ]
       },
-      loading: false,
       redirect: undefined
     }
   },
@@ -86,129 +92,127 @@ export default {
       immediate: true
     }
   },
-  created() {
-    // 获取验证码
-    this.getCode()
-    // 获取用户名密码等Cookie
-    this.getCookie()
-    // token 过期提示
-    this.point()
-  },
   methods: {
-    getCode() {
-      getCodeImg().then(res => {
-        this.codeUrl = res.img
-        this.loginForm.uuid = res.uuid
-      })
-    },
-    getCookie() {
-      const username = Cookies.get('username')
-      let password = Cookies.get('password')
-      const rememberMe = Cookies.get('rememberMe')
-      // 保存cookie里面的加密后的密码
-      this.cookiePass = password === undefined ? '' : password
-      password = password === undefined ? this.loginForm.password : password
-      this.loginForm = {
-        username: username === undefined ? this.loginForm.username : username,
-        password: password,
-        rememberMe: rememberMe === undefined ? false : Boolean(rememberMe),
-        code: ''
-      }
-    },
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        const user = {
-          username: this.loginForm.username,
-          password: this.loginForm.password,
-          rememberMe: this.loginForm.rememberMe,
-          code: this.loginForm.code,
-          uuid: this.loginForm.uuid
-        }
-        if (user.password !== this.cookiePass) {
-          user.password = encrypt(user.password)
-        }
+    login() {
+      // eslint-disable-next-line no-unused-vars
+      const _this = this
+      this.$refs.form.validate(async valid => {
         if (valid) {
-          this.loading = true
-          if (user.rememberMe) {
-            Cookies.set('username', user.username, { expires: Config.passCookieExpires })
-            Cookies.set('password', user.password, { expires: Config.passCookieExpires })
-            Cookies.set('rememberMe', user.rememberMe, { expires: Config.passCookieExpires })
-          } else {
-            Cookies.remove('username')
-            Cookies.remove('password')
-            Cookies.remove('rememberMe')
+          const params = {
+            loginname: this.form.loginname,
+            password: this.form.password
           }
-          this.$store.dispatch('Login', user).then(() => {
+          this.$store.dispatch('Login', params).then(() => {
             this.loading = false
-            this.$router.push({ path: this.redirect || '/' })
-          }).catch(() => {
-            this.loading = false
-            this.getCode()
+            Notification.success('登录成功')
+            setTimeout((_this) => {
+              this.$router.push({ path: this.redirect || '/' })
+            }, 1000)
+          }).catch((error) => {
+            Notification.error(error || '未知错误')
           })
-        } else {
-          console.log('error submit!!')
-          return false
         }
       })
     },
-    point() {
-      const point = Cookies.get('point') !== undefined
-      if (point) {
-        this.$notify({
-          title: '提示',
-          message: '当前登录状态已过期，请重新登录！',
-          type: 'warning',
-          duration: 5000
-        })
-        Cookies.remove('point')
-      }
+    toRegister() {
+      this.$router.push({ path: '/register' })
+    },
+    toForgetPwd() {
+      this.$router.push({ path: '/forget-pwd' })
     }
   }
 }
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-  .login {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    background-size: cover;
-  }
-  .title {
-    margin: 0 auto 30px auto;
-    text-align: center;
-    color: #707070;
-  }
+@import "../assets/styles/common.css";
 
-  .login-form {
-    border-radius: 6px;
-    background: #ffffff;
-    width: 385px;
-    padding: 25px 25px 5px 25px;
-    .el-input {
-      height: 38px;
-      input {
-        height: 38px;
-      }
-    }
-    .input-icon{
-      height: 39px;width: 14px;margin-left: 2px;
-    }
-  }
-  .login-tip {
-    font-size: 13px;
-    text-align: center;
-    color: #bfbfbf;
-  }
-  .login-code {
-    width: 33%;
-    display: inline-block;
-    height: 38px;
-    float: right;
-    img{
-      cursor: pointer;
-      vertical-align:middle
-    }
-  }
+.login {
+  width: 100%;
+  min-height: 1020px;
+  background-image: url(../assets/images/loginbg.png);
+  background-position: top bottom;
+  background-repeat: no-repeat;
+}
+
+.login-header {
+  height: 60px;
+  width: 100%;
+  background: #fff;
+}
+
+.logo1 {
+  margin: 10px 10px 10px 30px;
+}
+
+.logo2 {
+  margin: 18px 0;
+}
+
+.login-con {
+  width: 380px;
+  height: 446px;
+  margin: 200px auto 0;
+  border-radius: 2px;
+  background: #fff;
+  padding: 40px;
+  box-sizing: border-box;
+  position: relative;
+  margin-right: 330px;
+}
+
+.el-form-item__content {
+  margin-left: 0 !important;
+}
+
+.login-tit {
+  font-size: 24px;
+  color: #333;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.login-btn {
+  width: 100%;
+}
+
+.codebtn {
+  display: inline-block;
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 77px;
+  height: 77px;
+}
+
+.codeimg {
+  background: url(../assets/images/code.png);
+  background-repeat: no-repeat;
+}
+
+.saodiv {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 380px;
+  height: 446px;
+  z-index: 10;
+  background: #fff;
+  padding: 20px;
+  z-index: 100;
+  box-sizing: border-box;
+  display: none;
+}
+
+.saodiv-b {
+  padding-top: 20px;
+  border-top: 1px solid #ddd;
+  margin-top: 48px;
+}
+
+.codeimgwin {
+  background: url(../assets/images/pc.png);
+  background-repeat: no-repeat;
+}
 </style>

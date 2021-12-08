@@ -5,10 +5,13 @@ import store from '../store'
 import { getToken } from '@/utils/auth'
 import Config from '@/settings'
 import Cookies from 'js-cookie'
+import generateToken from '@/utils/tokenGenerator'
+import qs from 'qs'
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: process.env.NODE_ENV === 'production' ? process.env.VUE_APP_BASE_API : '/', // api 的 base_url
+  // baseURL: process.env.NODE_ENV === 'production' ? process.env.VUE_APP_BASE_API : '/', // api 的 base_url
+  baseURL: process.env.VUE_APP_BASE_API, // api 的 base_url
   timeout: Config.timeout // 请求超时时间
 })
 
@@ -16,9 +19,15 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     if (getToken()) {
-      config.headers['Authorization'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+      // config.headers['Authorization'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+      config.headers['token'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
     }
-    config.headers['Content-Type'] = 'application/json'
+    config.headers['uuid'] = generateToken()
+    config.headers['key'] = 'adaptivecloud.org'
+
+    config.data = qs.stringify(config.data) // 转为formdata数据格式
+    config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    // config.headers['Content-Type'] = 'application/json'
     return config
   },
   error => {

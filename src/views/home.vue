@@ -5,8 +5,8 @@
         <img src="../assets/images/logo4.png" height="92" alt="">
       </div>
       <div class="home-h-right">
-        <el-button class="common-btn ydloginbtn" round icon="el-icon-user-solid">登录</el-button>
-        <el-button class="common-btn ydregbtn" type="primary" round el-icon-edit>注册</el-button>
+        <el-button class="common-btn ydloginbtn" round icon="el-icon-user-solid" @click="toLogin">登录</el-button>
+        <!--        <el-button class="common-btn ydregbtn" type="primary" round el-icon-edit>注册</el-button>-->
         <!-- <el-dropdown>
           <span class="el-dropdown-link">
             18323562356<i class="el-icon-arrow-down el-icon--right"></i>
@@ -59,10 +59,12 @@
           </li>
           <li class="mright40">
             <div style="margin-top:145px;">热度排行榜</div>
+            <div class="after">
+              <div style="color:#fff;margin-top: 76px;margin-right: 40px;">即将上线，敬请等待</div>
+            </div>
           </li>
           <li class="mright40">
             <div class="before"><div style="margin-top:145px;">外设适配器查询</div>
-
             </div>
             <div class="after">
               <ul class="home-yw" style="margin-top:30px;">
@@ -89,6 +91,34 @@
     </div>
   </div>
 </template>
+
+<script>
+import { mapGetters } from 'vuex'
+
+export default {
+  data() {
+    return {
+      isLogin: false
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'sqlApi'
+    ])
+  },
+  mounted() {
+
+  },
+  methods: {
+    toLogin() {
+      this.$router.push({ path: '/login' })
+    },
+    toRegister() {
+      this.$router.push({ path: '/register' })
+    }
+  }
+}
+</script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
   @import url("https://unpkg.com/element-ui/lib/theme-chalk/index.css");

@@ -33,18 +33,9 @@ export const constantRouterMap = [
   },
   {
     path: '/',
-    component: Layout,
+    component: (resolve) => require(['@/views/home'], resolve),
     meta: { title: '首页', icon: 'index', affix: true, noCache: true },
-    hidden: true,
-    redirect: '/main',
-    children: [
-      {
-        path: '/main',
-        component: (resolve) => require(['@/views/home'], resolve),
-        hidden: true,
-        alias: '/'
-      }
-    ]
+    hidden: true
   },
   {
     path: '/user',

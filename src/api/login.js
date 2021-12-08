@@ -1,14 +1,16 @@
 import request from '@/utils/request'
+// eslint-disable-next-line no-unused-vars
+import generateToken from '@/utils/tokenGenerator'
 
 export function login(username, password, code, uuid) {
   return request({
-    url: 'auth/login',
+    url: 'members/sysUserLogin',
     method: 'post',
     data: {
-      username,
-      password,
-      code,
-      uuid
+      uuid: 'VG3OQ81wtrNGANeuq8IdwTBhgkAF53lFOIY6aCIBeo0=',
+      loginname: username,
+      password: password,
+      key: 'adaptivecloud.org'
     }
   })
 }
