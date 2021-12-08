@@ -108,7 +108,7 @@ export const constantRouterMap = [
       },
       {
         path: 'videos',
-        component: () => import('@/views/news'),
+        component: () => import('@/views/resources/videoList'),
         name: 'Videos',
         meta: { title: '视频学习', icon: 'el-icon-s-platform' }
       },

@@ -14,3 +14,24 @@ export function getUploadVideo(id) {
     method: 'get'
   })
 }
+export function getUploadDriverListByQuery(data) {
+  return request({
+    url: `/driver/upload/list`,
+    method: 'post',
+    data
+  })
+}
+
+export function getCheckList(firmId) {
+  return request({
+    url: `/driver/classify/${firmId}`,
+    method: 'get'
+  })
+}
+
+export function getFirmList() {
+  return request({
+    url: `/driver/FirmList`,
+    method: 'get'
+  })
+}
