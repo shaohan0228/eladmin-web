@@ -16,11 +16,11 @@
             :auto-upload="true"
             :on-success="handleSuccess"
             :on-error="handleError"
-            :action="fileUploadApi"
+            :action="fileUploadApi + '?name=' + uploadFileName"
             :multiple="false"
             style="width: 670px;"
           >
-            <div class=""><i class="el-icon-link" /> 附件上传</div>
+            <div class=""><i class="el-icon-link" /> 选择附件</div>
             <!-- <div slot="tip" class="el-upload__tip">可上传任意格式文件，且不超过100M</div>-->
           </el-upload>
         </el-form-item>
@@ -55,7 +55,6 @@
 
 <script type="text/javascript">
 import { mapGetters } from 'vuex'
-import CRUD from '@crud/crud'
 import ItaButton from '../../../components/ItaButton'
 
 export default {
@@ -69,6 +68,7 @@ export default {
         introduction: '',
         categories: []
       },
+      uploadFileName: '',
       fileList: [],
       imageURL: '',
       options: [{
@@ -189,14 +189,13 @@ export default {
         this.loading = false
         this.$message.error('上传文件大小不能超过 100MB!')
       }
-
+      // this.fileName = file.name
       return isLt2M
     },
     handleSuccess(response, file, fileList) {
+      console.log(response)
+      console.log(file)
       this.imageURL = URL.createObjectURL(file.raw)
-      this.crud.notify('上传成功', CRUD.NOTIFICATION_TYPE.SUCCESS)
-      this.$refs.upload.clearFiles()
-      this.crud.resetForm()
     },
     // 监听上传失败
     handleError(e, file, fileList) {

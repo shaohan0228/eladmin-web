@@ -144,13 +144,6 @@ export default {
     async fetchTableData() {
       const result = await getUploadKnowledgeList(this.query)
       const { page, total, size, contents } = result.data
-      for (let i = 0; i < contents.length; i++) {
-        const _item = contents[i]
-        _item.nodes = []
-        _item.params = undefined
-        _item.customParams = undefined
-        _item.expandLoading = false
-      }
       this.tableData = { page: page + 1, total, size, contents }
     },
     // 处理页面pagesize变化

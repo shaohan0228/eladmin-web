@@ -1,5 +1,6 @@
 // 适配 Nginx 反向代理
 const baseUrl = process.env.VUE_APP_BASE_API === '/' ? '' : process.env.VUE_APP_BASE_API
+const storageUrl = process.env.VUE_APP_STORAGE_API === '/' ? '' : process.env.VUE_APP_STORAGE_API
 const api = {
   state: {
     // 部署包上传
@@ -19,7 +20,7 @@ const api = {
     // swagger
     swaggerApi: baseUrl + '/swagger-ui.html',
     // 文件上传
-    fileUploadApi: baseUrl + '/api/localStorage',
+    fileUploadApi: storageUrl + '/api/localStorage/upload',
     // baseUrl，
     baseApi: baseUrl
   }
