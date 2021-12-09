@@ -186,7 +186,7 @@ export default {
   .el-button--text:active, .el-button--text:focus, .el-button--text:hover{border-color: #ca1824;background-color: #ca1824;color: #fff;}
   .video-search{padding: 10px 20px 10px 25px;}
   .videolist-tit{font-size: 24px;color: #333;margin: 30px 0;}
-  .videolist-item{width: 285px;height:314px;float: left;background: #fff;box-shadow: 0 0 10px #e1e1e1;cursor: pointer;margin-bottom: 20px;}
+  .videolist-item{width: 285px;height:314px;float: left;background: #fff;box-shadow: 0 0 10px #e1e1e1;margin-bottom: 20px;}
   .videolist-item-tit{font-size: 14px;color: #333;padding:0 10px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;line-height: 30px;margin-top: 5px;}
   .videolist-item-txt{font-size: 12px;color: #999;padding: 0 10px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;margin-top: 5px;}
   .videolist-item-bz{font-size: 12px;color: #999;padding:15px 10px;border-top: 1px solid #ddd;margin-top: 20px;}

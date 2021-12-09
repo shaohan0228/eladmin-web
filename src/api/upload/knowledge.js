@@ -30,3 +30,47 @@ export function editKnowledge(data) {
     data
   })
 }
+export function getHotKeyList() {
+  return request({
+    url: `/knowledge/hotKey`,
+    method: 'get'
+  })
+}
+export function getKnowListByKnowId(knowId) {
+  return request({
+    url: `/knowledge/getKnowListByKnowId/${knowId}`,
+    method: 'get'
+  })
+}
+export function getKnowSearchList(data) {
+  return request({
+    url: '/knowledge/getKnowSearchList',
+    method: 'post',
+    data
+  })
+}
+export function getKnowListByKnowType(data) {
+  return request({
+    url: '/knowledge/getKnowListByKnowType',
+    method: 'post',
+    data
+  })
+}
+export function getKnowCheck1() {
+  return request({
+    url: `/knowledge/getKnowCheck1`,
+    method: 'get'
+  })
+}
+export function getKnowCheck2(key) {
+  return request({
+    url: `/knowledge/getKnowCheck2/${key}`,
+    method: 'get'
+  })
+}
+export function getKnowCheck3(key) {
+  return request({
+    url: `/knowledge/getKnowCheck3/${key}`,
+    method: 'get'
+  })
+}
