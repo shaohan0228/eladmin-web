@@ -237,25 +237,6 @@ export const constantRouterMap = [
     ]
   },
   {
-    path: '/knowledge',
-    component: BackendLayout,
-    hidden: true,
-    children: [
-      {
-        path: ':id/details/:type',
-        component: () => import('@/views/resources/knowledgeDetails'),
-        name: 'KnowledgeDetails',
-        meta: { title: '知识详情', icon: 'tree' }
-      },
-      {
-        path: ':type/list',
-        component: () => import('@/views/resources/knowledgeList'),
-        name: 'KnowledgeList',
-        meta: { title: '知识列表', icon: 'tree' }
-      }
-    ]
-  },
-  {
     path: '/question',
     component: BackendLayout,
     hidden: true,
