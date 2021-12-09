@@ -43,7 +43,7 @@
         <!--          <a class="fsize14 pull-right" href="" @click="toForgetPwd">忘记密码</a>-->
         <!--        </div>-->
         <el-form-item>
-          <el-button type="primary" class="common-btn login-btn" @click.native.prevent="login">登录</el-button>
+          <el-button class="common-btn login-btn" @click.native.prevent="login">登录</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -128,7 +128,7 @@ export default {
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style rel="stylesheet/scss" lang="scss">
 @import "../assets/styles/common.css";
 
 .login {
@@ -165,7 +165,7 @@ export default {
   margin-right: 330px;
 }
 
-.el-form-item__content {
+.login .el-form-item__content {
   margin-left: 0 !important;
 }
 
@@ -218,5 +218,16 @@ export default {
 .codeimgwin {
   background: url(../assets/images/pc.png);
   background-repeat: no-repeat;
+}
+.common-btn{
+  background-color: #ca1824;
+  border-color: #ca1824;
+  color: #fff;
+}
+.common-btn:hover{
+  background-color: #ca1824;
+  border-color: #ca1824;
+  opacity: 0.8;
+  color: #fff;
 }
 </style>
