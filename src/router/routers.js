@@ -101,12 +101,6 @@ export const constantRouterMap = [
         meta: { title: '知识查询', icon: 'tree' }
       },
       {
-        path: 'knowledge/:id/details',
-        component: () => import('@/views/news/details'),
-        name: 'KnowledgeDetails',
-        meta: { title: '知识详情', icon: 'tree' }
-      },
-      {
         path: 'knowledge/list',
         component: () => import('@/views/news/list'),
         name: 'KnowledgeList',
@@ -225,6 +219,25 @@ export const constantRouterMap = [
         component: () => import('@/views/workorder/workOrderList'),
         hidden: true,
         meta: { title: '工单列表' }
+      }
+    ]
+  },
+  {
+    path: '/knowledge',
+    component: BackendLayout,
+    hidden: true,
+    children: [
+      {
+        path: ':id/details/:type',
+        component: () => import('@/views/news/details'),
+        name: 'KnowledgeDetails',
+        meta: { title: '知识详情', icon: 'tree' }
+      },
+      {
+        path: ':type/list',
+        component: () => import('@/views/news/list'),
+        name: 'KnowledgeList',
+        meta: { title: '知识列表', icon: 'tree' }
       }
     ]
   },

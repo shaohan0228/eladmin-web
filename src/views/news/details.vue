@@ -5,12 +5,32 @@
         <el-container>
           <el-aside width="160px" class="know-menu bacfff">
             <div class="menu-tit">知识查询</div>
-            <div>
+            <div v-if="type === '1'">
               <el-menu class="mtop20">
-                <el-menu-item index="1">
+                <el-menu-item class="is-active">
                   <span slot="title" @click="getQueryKnowledgeList(1)">常用知识</span>
                 </el-menu-item>
                 <el-menu-item index="2">
+                  <span slot="title" @click="getQueryKnowledgeList(2)">热门查询</span>
+                </el-menu-item>
+              </el-menu>
+            </div>
+            <div v-else-if="type === '2'">
+              <el-menu class="mtop20">
+                <el-menu-item>
+                  <span slot="title" @click="getQueryKnowledgeList(1)">常用知识</span>
+                </el-menu-item>
+                <el-menu-item class="is-active">
+                  <span slot="title" @click="getQueryKnowledgeList(2)">热门查询</span>
+                </el-menu-item>
+              </el-menu>
+            </div>
+            <div v-else>
+              <el-menu class="mtop20">
+                <el-menu-item>
+                  <span slot="title" @click="getQueryKnowledgeList(1)">常用知识</span>
+                </el-menu-item>
+                <el-menu-item>
                   <span slot="title" @click="getQueryKnowledgeList(2)">热门查询</span>
                 </el-menu-item>
               </el-menu>
@@ -42,6 +62,7 @@ export default {
   data() {
     return {
       id: null,
+      type: 0,
       title: '信创知识详情',
       date: '更新时间：2021-11-19 11:27:06',
       readNumber: '阅读量:3005',
@@ -54,18 +75,14 @@ export default {
   created() {
     const { params } = this.$route
     this.id = params.id
+    this.type = params.type
   },
   methods: {
     getDetails() {
       console.log(this.id)
     },
     getQueryKnowledgeList(type) {
-      if (type === 1) {
-        console.log('常用知识')
-      }
-      if (type === 2) {
-        console.log('热门查询')
-      }
+      this.$router.push('/knowledge/' + type + '/list')
     }
   }
 }

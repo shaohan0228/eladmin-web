@@ -6,7 +6,7 @@
         <el-menu>
           <router-link to="/workorder/list">
             <el-menu-item index="1">
-              <span slot="title" @click="workOrder">工单列表</span>
+              <span slot="title">工单列表</span>
             </el-menu-item>
           </router-link>
         </el-menu>
@@ -216,4 +216,5 @@ export default {
   .gdtimelinezt{border-radius: 20px;padding:6px 16px;color: rgba(255, 255, 255, 0.9);font-size: 12px;margin-left:10px;}
   .redbtn{background-color: #ca1824;border-color: #ca1824;color: #fff;}
   .redbtn:hover,.redbtn:active,.redbtn:focus{background-color: #ca1824;border-color: #ca1824;color: #fff;opacity: 0.8;}
+  .el-tabs__item.is-active {color: #ca1824;}
 </style>
