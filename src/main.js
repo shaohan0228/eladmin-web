@@ -34,6 +34,7 @@ import router from './router/routers'
 import './assets/icons' // icon
 import './router/index' // permission control
 import 'echarts-gl'
+import _ from 'lodash'
 
 Vue.use(checkPer)
 Vue.use(VueHighlightJS)
@@ -45,6 +46,7 @@ Vue.use(Element, {
 })
 
 Vue.config.productionTip = false
+Vue.prototype.$_ = _
 
 new Vue({
   el: '#app',

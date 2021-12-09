@@ -8,15 +8,17 @@
           <el-input v-model="formData.title" style="width: 670px" placeholder="请输入视频标题" />
         </el-form-item>
         <el-form-item label="视频链接" prop="path">
-          <el-input v-model="formData.path" style="width: 670px" placeholder="请输入视频下载链接" />
+          <el-input v-model="formData.path" style="width: 670px" placeholder="请输入视频下载链接" :disabled="pathInputDisabled" />
           <el-upload
             ref="upload"
             :limit="1"
             :before-upload="beforeUpload"
             :auto-upload="true"
-            :on-success="handleSuccess"
-            :on-error="handleError"
-            :action="fileUploadApi + '?name=' + uploadFileName"
+            :on-success="handleUploadSuccess"
+            :on-error="handleUploadError"
+            :on-remove="handleUploadRemove"
+            :on-exceed="handleUploadOverLimit"
+            :action="fileUploadApi + '?name='"
             :multiple="false"
             style="width: 670px;"
           >
@@ -50,6 +52,19 @@
         </el-form-item>
       </el-form>
     </div>
+    <el-dialog
+      :title="dialogInfo.title"
+      :visible.sync="dialogInfo.visible"
+      @closed="dialogClosed"
+    >
+      <div>
+        {{ dialogInfo.content }}
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <ita-button type="primary" @click="dialogConfirm">确认</ita-button>
+        <ita-button v-if="dialogInfo.confirm" @click="dialogCancel">取消</ita-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -62,15 +77,23 @@ export default {
   components: { ItaButton },
   data() {
     return {
+      dialogInfo: {
+        visible: false,
+        title: '提示',
+        confirm: false,
+        content: '提示信息',
+        confirmCallback: undefined,
+        cancelCallback: undefined
+      },
       formData: {
         title: '',
         path: '',
         introduction: '',
         categories: []
       },
+      pathInputDisabled: false,
       uploadFileName: '',
-      fileList: [],
-      imageURL: '',
+      uploadFilePaths: [],
       options: [{
         value: 'zhinan',
         label: '指南',
@@ -183,6 +206,11 @@ export default {
       this.$refs.upload.submit()
     },
     beforeUpload(file) {
+      if (this.formData.path) {
+        this.loading = false
+        this.$message.error('如果您指定了下载地址，则不能再上传文件')
+        return false
+      }
       let isLt2M = true
       isLt2M = file.size / 1024 / 1024 < 100
       if (!isLt2M) {
@@ -192,13 +220,14 @@ export default {
       // this.fileName = file.name
       return isLt2M
     },
-    handleSuccess(response, file, fileList) {
-      console.log(response)
-      console.log(file)
-      this.imageURL = URL.createObjectURL(file.raw)
+    handleUploadSuccess(response, file, fileList) {
+      this.uploadFilePaths.push(response.data[0])
+      // 生成一个伪地址
+      this.formData.path = URL.createObjectURL(file.raw)
+      this.pathInputDisabled = true
     },
     // 监听上传失败
-    handleError(e, file, fileList) {
+    handleUploadError(e, file, fileList) {
       const msg = JSON.parse(e.message)
       this.$notify({
         title: msg.message,
@@ -207,7 +236,47 @@ export default {
       })
       this.loading = false
     },
+    // 监听上传文件移除
+    handleUploadRemove(file, fileList) {
+      this.uploadFilePaths = this.$_.remove(this.uploadFilePaths, file.response.data[0])
+      this.pathInputDisabled = false
+      this.formData.path = ''
+    },
+    // 监听上传文件超过数量限制
+    handleUploadOverLimit(files, fileList) {
+      this.$message.error('只支持单个文件上传，请删除当前文件后再重新上传')
+      // this.openDialog('提示', '只支持单个文件上传，请删除当前文件后再重新上传', false)
+    },
     handleUploadForm() {
+    },
+    openDialog(title, content, confirm, confirmCallback, cancelCallback) {
+      this.dialogInfo.title = title || this.dialogInfo.title
+      this.dialogInfo.content = content || this.dialogInfo.content
+      this.dialogInfo.confirm = confirm || false
+      this.dialogInfo.confirmCallback = confirmCallback
+      this.dialogInfo.cancelCallback = cancelCallback
+      this.$nextTick(() => {
+        this.dialogInfo.visible = true
+      })
+    },
+    dialogClosed() {
+      this.dialogInfo.title = '提示'
+      this.dialogInfo.confirm = false
+      this.dialogInfo.content = '提示信息'
+      this.dialogInfo.confirmCallback = undefined
+      this.dialogInfo.cancelCallback = undefined
+    },
+    dialogConfirm() {
+      if (this.dialogInfo.confirmCallback) {
+        this.dialogInfo.confirmCallback.call()
+      }
+      this.dialogInfo.visible = false
+    },
+    dialogCancel() {
+      if (this.dialogInfo.cancelCallback) {
+        this.dialogInfo.cancelCallback.call()
+      }
+      this.dialogInfo.visible = false
     }
   }
 }
