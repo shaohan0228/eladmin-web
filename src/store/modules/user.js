@@ -32,11 +32,10 @@ const user = {
       return new Promise((resolve, reject) => {
         login(userInfo.loginname, userInfo.password, null, null).then(res => {
           if (res && res.code === 200) {
-            const resObj = JSON.parse(res.data)
             // 设置Token 30分钟过期
-            setToken(resObj.token, true, new Date(new Date().getTime() + 30 * 60 * 1000))
+            setToken(res.data.token, true, new Date(new Date().getTime() + 30 * 60 * 1000))
             // 向vuex中写入token
-            commit('SET_TOKEN', resObj.token)
+            commit('SET_TOKEN', res.data.token)
             // 设置用户信息
             // setUserInfo(res.user, commit)
             // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js
@@ -56,7 +55,7 @@ const user = {
       return new Promise((resolve, reject) => {
         getInfo().then(res => {
           if (res && res.code === 200) {
-            setUserInfo(JSON.parse(res.data), commit)
+            setUserInfo(res.data, commit)
             resolve()
           } else {
             reject(res.msg || '发生错误')
