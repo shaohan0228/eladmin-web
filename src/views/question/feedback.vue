@@ -1,11 +1,11 @@
 <template>
   <div class="problem">
     <div class="banner">
-      <div class="problem-tit">问题反馈</div>
+      <div class="problem-nannertit">问题反馈</div>
     </div>
     <div class="problem-con w1200">
       <div class="problem-tit">问题反馈</div>
-      <el-form ref="form" :model="form" label-width="120px" :rules="rules">
+      <el-form ref="form" :model="form" label-width="120px" :rules="rules" class="problem-form">
         <el-form-item label="问题类型：" prop="type">
           <el-radio-group v-model="form.type">
             <el-radio-button v-for="(item, index) in questionType" :key="index" :label="item.label" :value="item.value" />
@@ -156,6 +156,31 @@ export default {
     _this.identifyCode = ''
     _this.makeCode(_this.identifyCodes, 4)
     const editor = new E(this.$refs.editor)
+    // 配置菜单
+    editor.config.menus = [
+      'head', // 标题
+      'bold', // 粗体
+      'fontSize', // 字号
+      'fontName', // 字体
+      'italic', // 斜体
+      'underline', // 下划线
+      'strikeThrough', // 删除线
+      'foreColor', // 文字颜色
+      'backColor', // 背景颜色
+      'link', // 插入链接
+      'list', // 列表
+      'justify', // 对齐方式
+      'quote', // 引用
+      'emoticon', // 表情
+      'image', // 插入图片
+      'table', // 表格
+      'code', // 插入代码
+      'undo', // 撤销
+      'redo' // 重复
+    ]
+    editor.config.placeholder = '请填写内容详情'
+    // 取消自动 focus
+    editor.config.focus = false
     // 文件上传
     editor.config.customUploadImg = function(files, insert) {
       // files 是 input 中选中的文件列表
@@ -248,8 +273,9 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
   @import "../../assets/styles/common.css";
   html,body{width: 100%;height: 100%;min-height: 100%;min-height: 100vh;background: #f8f8f8;}
+  .problem{background: #f8f8f8;}
   .banner{background: url(../../assets/images/problem1.png);background-repeat: no-repeat;background-position: top center;height: 200px;}
-  .problem-tit{font-size: 46px;color: #fff;text-align: center;padding-top:50px;}
+  .problem-nannertit{font-size: 46px;color: #fff;text-align: center;padding-top:50px;}
   .problem-con{background: #fff;padding:20px;margin-top: -20px;margin-bottom: 40px;}
   .problem-tit{font-size: 24px;color: #333;padding: 30px;text-align: left;}
   .el-radio-button__inner:hover{color: #ca1824;}
@@ -260,4 +286,5 @@ export default {
   .yanimg img{display: block;width: 100%;height: 100%;}
   .el-select .el-input.is-focus .el-input__inner,.el-select .el-input__inner:focus{border-color: #ca1824;}
   .el-result .icon-warning{width: 30px;height: 30px;}
+  .problem-con .problem-form .el-form-item__content{margin-left:120px!important;}
 </style>

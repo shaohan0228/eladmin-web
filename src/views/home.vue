@@ -2,7 +2,7 @@
   <div class="home">
     <div class="home-h">
       <div class="logo">
-        <img src="../assets/images/logo4.png" height="92" alt="">
+        <img src="../assets/images/logo4.png" height="60" alt="">
       </div>
       <div class="home-h-right ">
         <el-button v-if="!isLogin" class="common-btn ydloginbtn" round icon="el-icon-user-solid" @click="toLogin">登录</el-button>
@@ -57,7 +57,7 @@
             <div class="before"><div style="margin-top:145px;">微信公众号</div></div>
             <div class="after">
               <div style="margin-top:40px;box-sizing: border-box;">
-                <img style="margin-right:40px;" src="../assets/images/homecode.png" height="119" width="119" alt=""></div>
+                <img style="margin-left:98px;" src="../assets/images/homecode.png" height="119" width="119" alt=""></div>
             </div>
           </li>
           <li class="mright40">
@@ -101,8 +101,8 @@
             </div>
           </li>
           <li>
-            <router-link to="question/feedback">
-              <div style="margin-top:145px;">问题反馈</div>
+            <router-link to="feedback">
+              <div style="margin-top:145px;color:#fff;">问题反馈</div>
             </router-link>
           </li>
         </ul>
@@ -112,7 +112,7 @@
 </template>
 
 <script>
-import { getToken } from '../utils/auth'
+import { getToken } from '@/utils/auth'
 
 export default {
   data() {
@@ -156,8 +156,8 @@ export default {
   .ydloginbtn:hover{background: #ffe7e9;color: #ca1824;}
   .ydregbtn{padding: 10px 30px!important;background: #ca1824;color: #fff;}
   .home-nav>li{position: relative;width: 310px;height: 200px;float: left;margin-bottom: 40px;font-size: 24px;color: #fff;text-align: center;border-radius: 11px;overflow: hidden;}
-  .home-nav li .before{width:100%;height: 100%;position: absolute;top:0;left: 0;background-repeat: no-repeat;background-position: center center;backface-visibility:hidden;transition:3s;}
-  .home-nav li .after{width:100%;height: 100%;position: absolute;top:0;left: 0;text-indent: 2em;transform:rotateY(-180deg);backface-visibility:hidden;transition:3s;background-position: center center;}
+  .home-nav li .before{width:100%;height: 100%;position: absolute;top:0;left: 0;background-repeat: no-repeat;background-position: center center;backface-visibility:hidden;transition:2s;}
+  .home-nav li .after{width:100%;height: 100%;position: absolute;top:0;left: 0;text-indent: 2em;transform:rotateY(-180deg);backface-visibility:hidden;transition:2s;background-position: center center;}
   .home-nav li:hover .before{transform:rotateY(180deg);}
   .home-nav li:hover .after{transform:rotateY(0deg);}
   .home-nav li:first-child .before{background-image: url(../assets/images/hone-nav1.png);}
@@ -173,6 +173,6 @@ export default {
   .home-nav li:nth-child(3) .after{background-image: url(../assets/images/hone-nav33.png);}
   .home-nav li:nth-child(4) .after{background-image: url(../assets/images/hone-nav44.png);}
   .home-nav li:nth-child(7) .after{background-image: url(../assets/images/hone-nav77.png);}
-  .home-nav .home-yw li{height: 66px;line-height: 66px;color: #fff;text-align: center;font-size: 20px;margin-bottom: 0px;padding-right: 100px;box-sizing: border-box;border-radius: 0;}
+  .home-nav .home-yw li{height: 67px;line-height: 66px;color: #fff;text-align: center;font-size: 20px;margin-bottom: 0px;padding-right: 100px;box-sizing: border-box;border-radius: 0;}
   .home-nav .home-yw li:hover{background:rgba(255,255,255,0.5);}
 </style>

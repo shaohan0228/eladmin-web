@@ -68,3 +68,7 @@ export default {
   }
 }
 </script>
+<style scoped>
+.el-dropdown-menu__item:not(.is-disabled):hover, .el-dropdown-menu__item:focus{background-color: #ffe7e9;color: #ca1824;}
+</style>
+

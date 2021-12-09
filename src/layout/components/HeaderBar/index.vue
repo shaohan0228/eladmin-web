@@ -2,7 +2,8 @@
   <el-header class="header-bar" height="60px">
     <div class="nav-bar flex-auto flex justify-between items-center h-full" :class="{'is-compact': compact}">
       <router-link to="/">
-        <img v-if="logo" :src="logo" class="logo" alt="logo">
+        <img v-if="logo" :src="logo" class="logo pull-left mright10" alt="logo">
+        <span class="fsize18 fw g333" style="margin-top: 6px;">河南省信创综合服务保障中心</span>
       </router-link>
       <el-menu
         :default-active="activeMenu"
@@ -18,7 +19,7 @@
 </template>
 
 <script>
-import Logo from '@/assets/images/logo.png'
+import Logo from '@/assets/images/logo1.png'
 import HeadBarMenuItem from './HeadBarMenuItem'
 import { mapGetters } from 'vuex'
 import variables from '@/assets/styles/variables.scss'
@@ -75,7 +76,7 @@ export default {
   @apply bg-white;
 
   .logo {
-    height: 60px;
+    height: 40px;
   }
   .nav-bar {
     @apply m-auto;
