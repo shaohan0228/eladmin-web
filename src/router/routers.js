@@ -101,10 +101,24 @@ export const constantRouterMap = [
         meta: { title: '知识查询', icon: 'tree' }
       },
       {
+        path: 'knowledge/:id/details/:type',
+        component: () => import('@/views/resources/knowledgeDetails'),
+        name: 'KnowledgeDetails',
+        hidden: true,
+        meta: { title: '知识详情', icon: 'tree', activeMenu: '/resources/knowledge' }
+      },
+      {
         path: 'knowledge/list',
-        component: () => import('@/views/news/list'),
+        component: () => import('@/views/resources/knowledgeList'),
         name: 'KnowledgeList',
-        meta: { title: '知识列表', icon: 'tree' }
+        meta: { title: '知识列表', icon: 'tree', activeMenu: '/resources/knowledge' }
+      },
+      {
+        path: 'knowledge/:type/list',
+        component: () => import('@/views/resources/knowledgeList'),
+        name: 'KnowledgeListType',
+        hidden: true,
+        meta: { title: '知识列表', icon: 'tree', activeMenu: '/resources/knowledge' }
       },
       {
         path: 'videos',
@@ -229,13 +243,13 @@ export const constantRouterMap = [
     children: [
       {
         path: ':id/details/:type',
-        component: () => import('@/views/news/details'),
+        component: () => import('@/views/resources/knowledgeDetails'),
         name: 'KnowledgeDetails',
         meta: { title: '知识详情', icon: 'tree' }
       },
       {
         path: ':type/list',
-        component: () => import('@/views/news/list'),
+        component: () => import('@/views/resources/knowledgeList'),
         name: 'KnowledgeList',
         meta: { title: '知识列表', icon: 'tree' }
       }

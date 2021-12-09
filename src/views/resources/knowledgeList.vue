@@ -81,21 +81,21 @@ export default {
   },
   created() {
     const { params } = this.$route
-    this.type = params.type
+    this.type = params.type || this.type
   },
   methods: {
     getKnowledgeList() {
       console.log('获取知识查询列表')
     },
     getQueryKnowledgeList(type) {
-      this.$router.push('/knowledge/' + type + '/list')
+      this.$router.push('/resources/knowledge/' + type + '/list')
     },
     getKnowledgeDetails(id) {
       let type = this.type
       if (type === undefined) {
         type = '0'
       }
-      this.$router.push('/knowledge/' + id + '/details/' + type)
+      this.$router.push('/resources/knowledge/' + id + '/details/' + type)
     }
   }
 }

@@ -278,7 +278,7 @@ export default {
   .problem-nannertit{font-size: 46px;color: #fff;text-align: center;padding-top:50px;}
   .problem-con{background: #fff;padding:20px;margin-top: -20px;margin-bottom: 40px;}
   .problem-tit{font-size: 24px;color: #333;padding: 30px;text-align: left;}
-  .el-radio-button__inner:hover{color: #ca1824;}
+  .el-radio-button__inner:hover{color: #ca1824!important;}
   .el-radio-button__orig-radio:checked+.el-radio-button__inner{background-color: #ca1824!important;border-color: #ca1824!important;-webkit-box-shadow: -1px 0 0 0 #ca1824;box-shadow: -1px 0 0 0 #ca1824;}
   .w60{width: 60%;}
   .w120{width:120px;}
