@@ -118,6 +118,7 @@ export const constantRouterMap = [
         path: 'knowledge/list',
         component: () => import('@/views/resources/knowledgeList'),
         name: 'KnowledgeList',
+        hidden: true,
         meta: { title: '知识列表', icon: 'tree', activeMenu: '/resources/knowledge' }
       },
       {
