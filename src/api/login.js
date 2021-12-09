@@ -17,8 +17,8 @@ export function login(username, password, code, uuid) {
 
 export function getInfo() {
   return request({
-    url: 'auth/info',
-    method: 'get'
+    url: 'members/getSysUserInfoByUserId',
+    method: 'post'
   })
 }
 
@@ -31,7 +31,7 @@ export function getCodeImg() {
 
 export function logout() {
   return request({
-    url: 'auth/logout',
-    method: 'delete'
+    url: 'members/Logout',
+    method: 'post'
   })
 }

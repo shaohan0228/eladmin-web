@@ -105,9 +105,13 @@ export default {
           this.$store.dispatch('Login', params).then(() => {
             this.loading = false
             Notification.success('登录成功')
-            setTimeout((_this) => {
-              this.$router.push({ path: this.redirect || '/' })
-            }, 1000)
+            this.$store.dispatch('GetInfo').then(() => {
+              setTimeout((_this) => {
+                this.$router.push({ path: this.redirect || '/' })
+              }, 500)
+            }).catch(() => {
+              Notification.error('无法获取用户信息')
+            })
           }).catch((error) => {
             Notification.error(error || '未知错误')
           })

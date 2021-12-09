@@ -29,6 +29,15 @@ router.beforeEach((to, from, next) => {
       next()
       NProgress.done()
     } else {
+      if (store.getters.roles.length === 0) {
+        store.dispatch('GetInfo').then(() => { // 拉取user_info
+        }).catch(() => {
+          store.dispatch('LogOut').then(() => {
+            location.reload() // 为了重新实例化vue-router对象 避免bug
+          })
+        })
+      }
+
       if (store.getters.constantsMenuLoad) {
         next()
       } else {
