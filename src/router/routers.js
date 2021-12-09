@@ -96,9 +96,16 @@ export const constantRouterMap = [
     children: [
       {
         path: 'knowledge',
-        component: () => import('@/views/news'),
+        component: () => import('@/views/resources/knowledge'),
         name: 'Knowledge',
         meta: { title: '知识查询', icon: 'tree' }
+      },
+      {
+        path: 'knowledgeSearch',
+        component: () => import('@/views/resources/knowledgeSearch'),
+        name: 'knowledgeSearch',
+        hidden: true,
+        meta: { title: '知识搜索列表', icon: 'tree', activeMenu: '/resources/knowledge' }
       },
       {
         path: 'knowledge/:id/details/:type',
@@ -131,7 +138,7 @@ export const constantRouterMap = [
         component: () => import('@/views/resources/video'),
         name: 'showVideo',
         hidden: true,
-        meta: { title: '视频观看', icon: 'el-icon-s-platform', activeMenu: '/resources/showVideo' }
+        meta: { title: '视频观看', icon: 'el-icon-s-platform', activeMenu: '/resources/videos' }
       },
       {
         path: 'drivers',
