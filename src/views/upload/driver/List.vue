@@ -22,18 +22,17 @@
         style="width: 100%"
         class="mt-6"
       >
-        <el-table-column prop="title" label="标题" />
-        <el-table-column prop="content" label="内容简介" />
+        <el-table-column prop="name" label="标题" />
+        <el-table-column prop="introduce" label="内容简介" />
         <el-table-column prop="state" label="状态">
           <template v-slot:default="scope">
-            <el-tag v-if="scope.row.state == 1" type="success">审核通过</el-tag>
-            <el-tag v-else-if="scope.row.state == 2" type="warning">待审核</el-tag>
-            <el-tag v-else-if="scope.row.state == 3" type="warning">未通过</el-tag>
-            <el-tag v-else type="warning">未知</el-tag>
+            <el-tag v-if="scope.row.state == 0" type="warning">审核中</el-tag>
+            <el-tag v-else-if="scope.row.state == 1" type="success">已通过</el-tag>
+            <el-tag v-else-if="scope.row.state == 2" type="danger">弃用</el-tag>
+            <el-tag v-else type="info">未知</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="uploader" label="上传人" />
-        <el-table-column prop="uploadTime" label="上传日期" />
+        <!--        <el-table-column prop="update_time" label="上传日期" />-->
         <el-table-column prop="operation" label="操作">
           <template v-slot:default="scope">
             <el-button type="text" size="small" @click="toModify(scope.row)">修改</el-button>
@@ -72,41 +71,10 @@ export default {
         total: 0,
         size: 10,
         page: 0,
-        contents: [
-          {
-            id: '1',
-            uploadTime: '2016-05-02',
-            uploader: '王小虎',
-            title: '麒麟驱动的安装与下载',
-            content: '麒麟驱动的安装与下载麒麟驱动的安装与下载..'
-          },
-          {
-            id: '2',
-            uploadTime: '2016-05-04',
-            uploader: '王小虎',
-            title: '麒麟驱动的安装与下载',
-            content: '麒麟驱动的安装与下载麒麟驱动的安装与下载..'
-          },
-          {
-            id: '3',
-            uploadTime: '2016-05-01',
-            uploader: '王小虎',
-            title: '麒麟驱动的安装与下载',
-            content: '麒麟驱动的安装与下载麒麟驱动的安装与下载..'
-          },
-          {
-            id: '4',
-            uploadTime: '2016-05-03',
-            uploader: '王小虎',
-            title: '麒麟驱动的安装与下载',
-            content: '普陀麒麟驱动的安装与下载麒麟驱动的安装与下载..区'
-          }
-        ]
+        contents: []
       },
       query: {
         blurry: '',
-        paused: undefined,
-        type: undefined,
         createdTime: [],
         page: 0,
         size: 10,
@@ -142,16 +110,11 @@ export default {
     },
     // 获取表格数据
     async fetchTableData() {
-      const result = await getUploadDriverList(this.query)
-      const { page, total, size, contents } = result.data
-      for (let i = 0; i < contents.length; i++) {
-        const _item = contents[i]
-        _item.nodes = []
-        _item.params = undefined
-        _item.customParams = undefined
-        _item.expandLoading = false
+      const result = await getUploadDriverList({ pageNum: this.query.page + 1, showCount: this.query.size })
+      if (result && result.code === 200) {
+        const { page, total, size, contents } = result.data
+        this.tableData = { page: page, total, size, contents }
       }
-      this.tableData = { page: page + 1, total, size, contents }
     },
     // 处理页面pagesize变化
     handleSizeChange(val) {
@@ -169,8 +132,7 @@ export default {
     },
     // 上传
     toModify(rowData) {
-      console.log(`TRY TO MODIFY ${JSON.stringify(rowData)}`)
-      this.$router.push(`/upload_manage/driver/${rowData.id}/update`)
+      this.$router.push(`/upload_manage/driver/${rowData.drive_id}/update`)
     }
   }
 }

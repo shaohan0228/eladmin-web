@@ -24,7 +24,7 @@
             accept=".mp4,.m4v"
             style="width: 670px;"
           >
-            <div class=""><i class="el-icon-link" /> 选择附件</div>
+            <div class=""><i class="el-icon-link" /> 附件上传</div>
             <!-- <div slot="tip" class="el-upload__tip">可上传任意格式文件，且不超过100M</div>-->
           </el-upload>
         </el-form-item>
@@ -37,10 +37,9 @@
             placeholder="请输入简介"
           />
         </el-form-item>
-        <el-form-item label="关联功能" prop="categories">
+        <el-form-item v-if="!disableEditorCategories" label="关联功能" prop="categories">
           <el-cascader
             v-model="formData.categories"
-            :disabled="modifyId && true"
             :props="cascadeProps"
             :show-all-levels="true"
             clearable
@@ -100,6 +99,7 @@ export default {
       },
       pathInputDisabled: false,
       uploadDisabled: false,
+      disableEditorCategories: false,
       uploadFileName: '',
       uploadFilePaths: [],
       supportFileType: ['.mp4', '.m4a'],
@@ -117,11 +117,12 @@ export default {
         ],
         path: [
           { required: true, message: '请输入视频下载链接或选择附件上传', trigger: 'blur' },
-          { min: 2, max: 200, message: '长度在 7 到 200 个字符', trigger: 'blur' }
+          { min: 2, max: 500, message: '长度在 7 到 500 个字符', trigger: 'blur' },
+          { pattern: /^(http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/, message: '请输入合法的视频地址', trigger: 'blur' }
         ],
         introduction: [
           { required: true, message: '请输入视频简介', trigger: 'blur' },
-          { min: 2, max: 200, message: '长度在 2 到 200 个字符', trigger: 'blur' }
+          { min: 2, max: 1000, message: '长度在 2 到 1000 个字符', trigger: 'blur' }
         ],
         categories: [
           { required: true, message: '请选择关联功能', trigger: 'blur' }
@@ -151,10 +152,12 @@ export default {
       if (res && res.code === 200) {
         const { data } = res
         this.formData.title = data.title
-        this.formData.introduction = data.inntroduce
+        this.formData.introduction = data.introduce
         this.pathInputDisabled = true
         this.uploadDisabled = true
+        this.disableEditorCategories = true
         this.formData.path = data.video_url_address
+        this.formData.categories.push[data.equipment_id]
       } else {
         this.openDialog('错误', '无法获取视频信息', false, () => { this.$routers.push({ path: 'upload_manage/video' }) })
       }
@@ -171,6 +174,7 @@ export default {
         }
 
         let uploadResult
+        const operateType = this.modifyId ? '视频更新' : '视频上传'
         if (this.modifyId) {
           updateParams.videoId = this.modifyId
           uploadResult = await updateVideo(updateParams)
@@ -183,14 +187,14 @@ export default {
         if (uploadResult && uploadResult.code === 200) {
           this.openDialog(
             '成功',
-            '视频上传成功，点击确定返回列表页面',
+            `${operateType}成功，点击确定返回列表页面`,
             false,
             () => { this.$router.push({ path: '/upload_manage/video' }) },
           )
         } else {
           this.openDialog(
             '失败',
-            `视频上传失败, 原因： ${uploadResult.msg} 。<br/> 点击确定返回列表页面`,
+            `${operateType}失败, 原因： ${uploadResult.msg} 。<br/> 点击确定返回列表页面`,
             false,
             () => { this.$router.push({ path: '/upload_manage/video' }) }
           )
@@ -203,8 +207,8 @@ export default {
         const _result = res.data.contents
         const nodes = _result.map((_item) => {
           return {
-            label: _item.type_name,
-            value: _item.knowledge_type_id
+            label: `${_item.equipment_name} ${_item.equipment_model}`,
+            value: _item.equipment_id
           }
         })
         if (nodes.length === 0) {
@@ -230,7 +234,7 @@ export default {
 
       if (this.formData.path) {
         this.loading = false
-        this.$message.error('如果您指定了下载地址，则不能再上传文件')
+        this.$message.error('如果您指定了视频地址，则不能再上传文件')
         return false
       }
       let isLt2M = true

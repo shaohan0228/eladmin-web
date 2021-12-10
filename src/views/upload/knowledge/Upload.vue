@@ -1,6 +1,6 @@
 <template>
   <div class="main-con">
-    <div class="main-tit">知识上传</div>
+    <div class="main-tit">{{ modifyId ? '知识修改' : '知识上传' }}</div>
     <div class="main-content">
       <!--表单组件-->
       <el-form ref="uploadForm" size="small" :model="formData" :rules="rules" label-width="100px">
@@ -10,7 +10,7 @@
         <el-form-item label="内容详情" prop="content">
           <div ref="editor" class="content-editor pt-1" style="width: 670px" />
         </el-form-item>
-        <el-form-item label="关联功能" prop="categories">
+        <el-form-item v-if="!disableEditorCategories" label="关联功能" prop="categories">
           <el-cascader
             v-model="formData.categories"
             :props="cascadeProps"
@@ -26,118 +26,63 @@
         </el-form-item>
       </el-form>
     </div>
+    <el-dialog
+      :title="dialogInfo.title"
+      :visible.sync="dialogInfo.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
+      @closed="dialogClosed"
+    >
+      <div v-html="dialogInfo.content" />
+      <div slot="footer" class="dialog-footer">
+        <ita-button type="primary" @click="dialogConfirm">确认</ita-button>
+        <ita-button v-if="dialogInfo.confirm" @click="dialogCancel">取消</ita-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getUploadKnowledge } from '@/api/upload/knowledge'
+import { getUploadKnowledge, uploadKnowledge, updateKnowledge } from '@/api/upload/knowledge'
 import E from 'wangeditor'
 import { upload } from '@/utils/upload'
 import { mapGetters } from 'vuex'
-import { uploadKnowledge } from '@/api/upload/knowledge'
 import ItaButton from '../../../components/ItaButton'
+import { getKnowledgeCategories } from '../../../api/dict/dict'
+
+let editor
 
 export default {
   components: { ItaButton },
   data() {
     return {
       modifyId: null,
+      companyId: null,
+      dialogInfo: {
+        visible: false,
+        title: '提示',
+        confirm: false,
+        content: '提示信息',
+        confirmCallback: undefined,
+        cancelCallback: undefined
+      },
       formData: {
         title: '',
         content: '',
         categories: []
       },
+      disableEditorCategories: false,
       cascadeProps: {
         multiple: false,
         checkStrictly: true,
         lazy: true,
         lazyLoad: this.loadKnowledgeCategories
       },
-      options: [{
-        value: 'zhinan',
-        label: '指南',
-        children: [{
-          value: 'shejiyuanze',
-          label: '设计原则',
-          children: [{
-            value: 'yizhi',
-            label: '一致'
-          }, {
-            value: 'fankui',
-            label: '反馈'
-          }, {
-            value: 'xiaolv',
-            label: '效率'
-          }, {
-            value: 'kekong',
-            label: '可控'
-          }]
-        }, {
-          value: 'daohang',
-          label: '导航',
-          children: [{
-            value: 'cexiangdaohang',
-            label: '侧向导航'
-          }, {
-            value: 'dingbudaohang',
-            label: '顶部导航'
-          }]
-        }]
-      }, {
-        value: 'zujian',
-        label: '组件',
-        children: [{
-          value: 'basic',
-          label: 'Basic',
-          children: [{
-            value: 'layout',
-            label: 'Layout 布局'
-          }, {
-            value: 'color',
-            label: 'Color 色彩'
-          }]
-        }, {
-          value: 'form',
-          label: 'Form',
-          children: [{
-            value: 'radio',
-            label: 'Radio 单选框'
-          }, {
-            value: 'checkbox',
-            label: 'Checkbox 多选框'
-          }, {
-            value: 'input',
-            label: 'Input 输入框'
-          }]
-        }, {
-          value: 'data',
-          label: 'Data',
-          children: [{
-            value: 'table',
-            label: 'Table 表格'
-          }, {
-            value: 'tag',
-            label: 'Tag 标签'
-          }]
-        }]
-      }, {
-        value: 'ziyuan',
-        label: '资源',
-        children: [{
-          value: 'axure',
-          label: 'Axure Components'
-        }, {
-          value: 'sketch',
-          label: 'Sketch Templates'
-        }, {
-          value: 'jiaohu',
-          label: '组件交互文档'
-        }]
-      }],
       rules: {
         title: [
           { required: true, message: '请输入标题', trigger: 'blur' },
-          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
+          { min: 2, max: 100, message: '长度在 2 到 100 个字符', trigger: 'blur' }
         ],
         categories: [
           { required: true, message: '请选择关联功能', trigger: 'blur' }
@@ -150,28 +95,22 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'imagesUploadApi'
+      'fileUploadApi'
     ])
   },
   created() {
     const { params } = this.$route
     this.modifyId = params.id
+    this.companyId = this.$store.getters.user.company_id
   },
   mounted() {
     const _this = this
-    const editor = new E(this.$refs.editor)
-    // 文件上传
-    editor.config.customUploadImg = function(files, insert) {
-      // files 是 input 中选中的文件列表
-      // insert 是获取图片 url 后，插入到编辑器的方法
-      files.forEach(image => {
-        files.forEach(image => {
-          upload(_this.imagesUploadApi, image).then(data => {
-            insert(data.data.url)
-          })
-        })
-      })
+    editor = new E(this.$refs.editor)
+
+    if (this.modifyId) {
+      this.loadKnowledgeInfo(this.modifyId)
     }
+
     // 配置菜单
     editor.config.menus = [
       'head', // 标题
@@ -201,33 +140,134 @@ export default {
       this.formData.content = html
     }
     editor.config.onblur = (html) => {
-      console.log('onblur', html) // 获取最新的 html 内容
       this.formData.content = html
-      this.$refs.uploadForm.validateField('content', (message) => {
-        console.log(`valid content error: ${message}`)
+      this.$refs.uploadForm.validateField('content', () => {
       })
     }
+
+    editor.config.zIndex = 1050
+
+    editor.config.customUploadImg = async(files, insert) => {
+      // files 是 input 中选中的文件列表
+      // insert 是获取图片 url 后，插入到编辑器的方法
+      files.forEach(image => {
+        upload(_this.fileUploadApi, image).then(res => {
+          const url = res.data.data[0]
+          insert(url)
+        })
+      })
+    }
+
     editor.create()
+
     if (this.modifyId) {
-      this.getKnowledge(this.modifyId)
+      this.loadKnowledgeInfo(this.modifyId)
     }
   },
   methods: {
-    loadKnowledgeCategories(node, resolve) {
-      const { value } = node
-      console.log(JSON.stringify(value))
-      resolve([])
+    async loadKnowledgeInfo(knowledgeId) {
+      const res = await getUploadKnowledge(knowledgeId)
+      if (res && res.code === 200) {
+        const { data } = res
+        this.formData.title = data.problem_description
+        this.formData.content = data.problem_solution
+        editor.txt.html(data.problem_solution)
+        this.disableEditorCategories = true
+        this.formData.categories.push[data.equipment_id]
+      } else {
+        this.openDialog('错误', '无法获取视频信息', false, () => { this.$routers.push({ path: 'upload_manage/knowledge' }) })
+      }
     },
-    async getKnowledge(id) {
-      const { data: knowledgeInfo } = await getUploadKnowledge(id)
-      this.formData = knowledgeInfo
+    async loadKnowledgeCategories(node, resolve) {
+      const { value } = node
+      await getKnowledgeCategories(value).then((res) => {
+        const _result = res.data.contents
+        const nodes = _result.map((_item) => {
+          return {
+            label: _item.type_name,
+            value: _item.knowledge_type_id
+          }
+        })
+        if (nodes.length === 0) {
+          resolve()
+        } else {
+          resolve(nodes)
+        }
+      }).catch(() => {
+        resolve([])
+      })
     },
     doSubmit() {
       this.$refs.uploadForm.validate(async(result) => {
-        if (result) {
-          await uploadKnowledge(this.formData)
+        if (!result) {
+          return
+        }
+
+        const updateParams = {
+          problem_description: this.formData.title,
+          knowledge_type_id: undefined,
+          problem_solution: this.formData.content,
+          company_id: this.company_id,
+          equipment_id: this.formData.categories[this.formData.categories.length - 1],
+          label: undefined
+        }
+
+        let uploadResult
+        const operateType = this.modifyId ? '知识库更新' : '知识库上传'
+        if (this.modifyId) {
+          updateParams.knowledgeId = this.modifyId
+          uploadResult = await updateKnowledge(updateParams)
+        } else {
+          updateParams.company_id = this.companyId
+          updateParams.equipment_id = this.formData.categories[this.formData.categories.length - 1]
+          uploadResult = await uploadKnowledge(updateParams)
+        }
+
+        if (uploadResult && uploadResult.code === 200) {
+          this.openDialog(
+            '成功',
+            `${operateType}成功，点击确定返回列表页面`,
+            false,
+            () => { this.$router.push({ path: '/upload_manage/knowledge' }) },
+          )
+        } else {
+          this.openDialog(
+            '失败',
+            `${operateType}失败, 原因： ${uploadResult.msg} 。<br/> 点击确定返回列表页面`,
+            false,
+            () => { this.$router.push({ path: '/upload_manage/knowledge' }) }
+          )
         }
       })
+    },
+    openDialog(title, content, confirm, confirmCallback, cancelCallback) {
+      this.dialogInfo.title = title || this.dialogInfo.title
+      this.dialogInfo.content = content || this.dialogInfo.content
+      this.dialogInfo.confirm = confirm || false
+      this.dialogInfo.confirmCallback = confirmCallback
+      this.dialogInfo.cancelCallback = cancelCallback
+      this.$nextTick(() => {
+        this.dialogInfo.visible = true
+      })
+    },
+    dialogClosed() {
+      this.dialogInfo.title = '提示'
+      this.dialogInfo.confirm = false
+      this.dialogInfo.content = '提示信息'
+      this.dialogInfo.confirmCallback = undefined
+      this.dialogInfo.cancelCallback = undefined
+    },
+    dialogConfirm() {
+      if (this.dialogInfo.confirmCallback) {
+        this.dialogInfo.confirmCallback.call()
+      }
+      this.dialogInfo.visible = false
+    },
+    dialogCancel() {
+      if (this.dialogInfo.cancelCallback) {
+        this.dialogInfo.cancelCallback.call()
+      }
+      this.dialogInfo.visible = false
     }
   }
 }

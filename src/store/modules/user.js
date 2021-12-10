@@ -33,7 +33,8 @@ const user = {
         login(userInfo.loginname, userInfo.password, null, null).then(res => {
           if (res && res.code === 200) {
             // 设置Token 30分钟过期
-            setToken(res.data.token, true, new Date(new Date().getTime() + 30 * 60 * 1000))
+            // setToken(res.data.token, true, new Date(new Date().getTime() + 30 * 60 * 1000))
+            setToken(res.data.token, true, 1)
             // 向vuex中写入token
             commit('SET_TOKEN', res.data.token)
             // 设置用户信息
