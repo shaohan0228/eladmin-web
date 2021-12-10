@@ -16,12 +16,12 @@
       <div class="main-con">
         <div class="main-tit">工单管理</div>
         <div class="padd20">
-          <el-tabs v-model="activeName" type="card">
+          <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
             <el-tab-pane label="全部工单" name="first">
               <div class="tab-con">
                 <div class="table-top">
                   <el-input
-                    v-model="query.blurry"
+                    v-model="tableData.searchWord"
                     placeholder="请输入搜索的标题和内容"
                     style="width:200px;"
                     @keyup.enter.native="fetchTableData"
@@ -36,19 +36,19 @@
                   style="width: 100%"
                   class="mt-6"
                 >
-                  <el-table-column prop="number" label="工单编号" />
-                  <el-table-column prop="title" label="工单标题" />
-                  <el-table-column prop="state" label="状态">
+                  <el-table-column prop="worksheet_id" label="工单编号" />
+                  <el-table-column prop="describe" label="工单标题" />
+                  <el-table-column prop="status" label="状态">
                     <template v-slot:default="scope">
-                      <el-tag v-if="scope.row.state == 1" type="warning">待受理</el-tag>
-                      <el-tag v-else-if="scope.row.state == 2" type="warning">处理中</el-tag>
-                      <el-tag v-else-if="scope.row.state == 3" type="success">已处理</el-tag>
+                      <el-tag v-if="scope.row.status === '0'" type="warning">待受理</el-tag>
+                      <el-tag v-else-if="scope.row.status === '1'" type="warning">处理中</el-tag>
+                      <el-tag v-else-if="scope.row.status === '2'" type="success">已处理</el-tag>
                       <el-tag v-else type="warning">未知</el-tag>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="receiveTime" label="接收时间" />
-                  <el-table-column prop="finishTime" label="结束时间" />
-                  <el-table-column prop="operation" label="操作">
+                  <el-table-column prop="create_time" label="接收时间" />
+                  <el-table-column prop="update_time" label="结束时间" />
+                  <el-table-column label="操作">
                     <template v-slot:default="scope">
                       <el-button type="text" size="small" @click="toDetails(scope.row)">详情</el-button>
                     </template>
@@ -66,8 +66,104 @@
                 />
               </div>
             </el-tab-pane>
-            <el-tab-pane label="待受理" name="second">待受理</el-tab-pane>
-            <el-tab-pane label="已处理" name="third">已处理</el-tab-pane>
+            <el-tab-pane label="待受理" name="second">
+              <div class="tab-con">
+                <div class="table-top">
+                  <el-input
+                    v-model="tableData.searchWord"
+                    placeholder="请输入搜索的标题和内容"
+                    style="width:200px;"
+                    @keyup.enter.native="fetchTableData"
+                  />
+                  <el-button class="redbtn" icon="el-icon-search" @click="fetchTableData">搜索</el-button>
+                </div>
+                <el-table
+                  ref="tableRef"
+                  v-loading="loading"
+                  :data="tableData.contents"
+                  highlight-current-row
+                  style="width: 100%"
+                  class="mt-6"
+                >
+                  <el-table-column prop="worksheet_id" label="工单编号" />
+                  <el-table-column prop="describe" label="工单标题" />
+                  <el-table-column prop="status" label="状态">
+                    <template v-slot:default="scope">
+                      <el-tag v-if="scope.row.status === '0'" type="warning">待受理</el-tag>
+                      <el-tag v-else-if="scope.row.status === '1'" type="warning">处理中</el-tag>
+                      <el-tag v-else-if="scope.row.status === '2'" type="success">已处理</el-tag>
+                      <el-tag v-else type="warning">未知</el-tag>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="create_time" label="接收时间" />
+                  <el-table-column prop="update_time" label="结束时间" />
+                  <el-table-column label="操作">
+                    <template v-slot:default="scope">
+                      <el-button type="text" size="small" @click="toDetails(scope.row)">详情</el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <el-pagination
+                  layout="total, sizes, prev, pager, next, jumper"
+                  class="text-right mt-6"
+                  :page-sizes="[10, 20, 30, 40]"
+                  :total="tableData.total"
+                  :page-size="tableData.size"
+                  :current-page="tableData.page"
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                />
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="已处理" name="third">
+              <div class="tab-con">
+                <div class="table-top">
+                  <el-input
+                    v-model="tableData.searchWord"
+                    placeholder="请输入搜索的标题和内容"
+                    style="width:200px;"
+                    @keyup.enter.native="fetchTableData"
+                  />
+                  <el-button class="redbtn" icon="el-icon-search" @click="fetchTableData">搜索</el-button>
+                </div>
+                <el-table
+                  ref="tableRef"
+                  v-loading="loading"
+                  :data="tableData.contents"
+                  highlight-current-row
+                  style="width: 100%"
+                  class="mt-6"
+                >
+                  <el-table-column prop="worksheet_id" label="工单编号" />
+                  <el-table-column prop="describe" label="工单标题" />
+                  <el-table-column prop="status" label="状态">
+                    <template v-slot:default="scope">
+                      <el-tag v-if="scope.row.status === '0'" type="warning">待受理</el-tag>
+                      <el-tag v-else-if="scope.row.status === '1'" type="warning">处理中</el-tag>
+                      <el-tag v-else-if="scope.row.status === '2'" type="success">已处理</el-tag>
+                      <el-tag v-else type="warning">未知</el-tag>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="create_time" label="接收时间" />
+                  <el-table-column prop="update_time" label="结束时间" />
+                  <el-table-column label="操作">
+                    <template v-slot:default="scope">
+                      <el-button type="text" size="small" @click="toDetails(scope.row)">详情</el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <el-pagination
+                  layout="total, sizes, prev, pager, next, jumper"
+                  class="text-right mt-6"
+                  :page-sizes="[10, 20, 30, 40]"
+                  :total="tableData.total"
+                  :page-size="tableData.size"
+                  :current-page="tableData.page"
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                />
+              </div>
+            </el-tab-pane>
           </el-tabs>
         </div>
       </div>
@@ -79,77 +175,28 @@ import { getWorkOrderList } from '@/api/work/work'
 export default {
   data() {
     return {
-      // 存储一些默认数据
-      default: {
-        // 表格查询参数
-        query: {}
-      },
       activeName: 'first',
       searchToggle: true,
       loading: false, // 控制加载中状态显示
       tableData: {
         total: 0,
         size: 10,
-        page: 0,
-        contents: [
-          {
-            id: '1',
-            number: '202112050206',
-            title: '麒麟驱动的安装与下载',
-            receiveTime: '2021-12-05',
-            finishTime: '2021-12-05',
-            state: 3
-          },
-          {
-            id: '2',
-            number: '202112050206',
-            title: '麒麟驱动的安装与下载',
-            receiveTime: '2021-12-05',
-            finishTime: '2021-12-06',
-            state: 3
-          },
-          {
-            id: '3',
-            number: '202112050206',
-            title: '麒麟驱动的安装与下载',
-            receiveTime: '2021-12-06',
-            finishTime: '2021-12-06',
-            state: 2
-          },
-          {
-            id: '4',
-            number: '202112050206',
-            title: '如何解决工单异常问题呢',
-            receiveTime: '2021-12-06',
-            finishTime: '2021-12-07',
-            state: 1
-          }
-        ]
-      },
-      query: {
-        blurry: '',
-        paused: undefined,
-        type: undefined,
-        createdTime: [],
-        page: 0,
-        size: 10,
-        sort: 'id,desc'
+        page: 1,
+        contents: [],
+        searchWord: ''
       }
     }
   },
   async mounted() {
-    this.initDefaultValues()
     await this.fetchTableData()
   },
   methods: {
-    // 初始化默认值
-    initDefaultValues() {
-      this.default.query = JSON.parse(JSON.stringify(this.query))
-    },
     // 刷新表格
     async refreshTasks() {
       this.loading = true
       try {
+        this.tableData.page = 1
+        this.tableData.size = 10
         await this.fetchTableData()
       } finally {
         this.loading = false
@@ -157,31 +204,45 @@ export default {
     },
     // 获取表格数据
     async fetchTableData() {
-      console.log('query')
-      const result = await getWorkOrderList(this.query)
-      const { page, total, size, contents } = result.data
-      for (let i = 0; i < contents.length; i++) {
-        const _item = contents[i]
-        _item.nodes = []
-        _item.params = undefined
-        _item.customParams = undefined
-        _item.expandLoading = false
+      const result = await getWorkOrderList(this.tableData)
+      if (result.code === 200) {
+        const { page, total, size, contents } = result.data
+        this.tableData = { page, total, size, contents }
       }
-      this.tableData = { page: page + 1, total, size, contents }
     },
     // 处理页面pagesize变化
     handleSizeChange(val) {
-      this.query.size = val
+      this.tableData.size = val
       this.fetchTableData()
     },
     // 处理页码跳转
     handleCurrentChange(val) {
-      this.query.page = val - 1
+      if (val <= 0) {
+        this.tableData.page = 1
+      }
+      this.tableData.page = val
       this.fetchTableData()
+    },
+    // tab切换
+    handleClick(tab, event) {
+      // if (tab.index === '0') {
+      //   this.refreshTasks()
+      // }
+      // if (tab.index === '1') {
+      //   this.refreshTasks()
+      // }
+      // if (tab.index === '2') {
+      //   this.refreshTasks()
+      // }
     },
     // 工单详情
     toDetails(rowData) {
-      this.$router.push(`/workorder/${rowData.id}/details`)
+      this.$router.push(`/workorder/${rowData.worksheet_id}/details`)
+    },
+    dateTimeNull(value) {
+      if (value === null || value === '') {
+        return '--'
+      }
     }
   }
 }

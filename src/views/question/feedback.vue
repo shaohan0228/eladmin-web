@@ -47,27 +47,17 @@
         </el-form-item>
         <el-form-item>
           <el-button class="redbtn" @click="doSubmit">提交</el-button>
-          <!-- <el-button>取消</el-button> -->
+          <!--<el-button>取消</el-button>-->
         </el-form-item>
       </el-form>
       <!-- 成功提示，先隐藏 -->
-      <el-dialog title="" :modal-append-to-body="false" :visible.sync="dialogVisible1" width="30%" :before-close="closeDialog">
+      <el-dialog title="" :modal-append-to-body="false" :visible.sync="dialogVisible" width="30%" :before-close="closeDialog">
         <div>
           <el-result class="clearfix" icon="success" title="反馈成功" style="display:block;padding:0 30px;" />
           <div class="fsize12 g999 p-left60 mtop10">您的问题已经反馈给相关的工作人员</div>
         </div>
         <span slot="footer" class="dialog-footer">
-          <el-button class="redbtn" @click="toIndex">返回首页</el-button>
-        </span>
-      </el-dialog>
-      <el-dialog title="温馨提示" :modal-append-to-body="false" :visible.sync="dialogVisible2" width="30%" :before-close="closeDialog">
-        <div class="clearfix">
-          <el-result class="clearfix pull-left" icon="warning" title="" style="display:inline-block;padding:0 0 0 30px;" />
-          <div class="fsize12 g999 pull-left" style="margin-top:6px;" v-html="msg" />
-        </div>
-        <span slot="footer" class="dialog-footer">
-          <el-button class="redbtn">确认</el-button>
-          <el-button>取消</el-button>
+          <el-button class="redbtn" @click="toIndex" v-html="indexMessage">返回首页</el-button>
         </span>
       </el-dialog>
     </div>
@@ -79,7 +69,7 @@ import E from 'wangeditor'
 import SIdentify from '../../components/sidentify/index'
 import { upload } from '@/utils/upload'
 import Footer from '@/components/Footer'
-import { toQuestionFeedback } from '@/api/work/question'
+import { toQuestionFeedback } from '@/api/quetsion/question'
 
 export default {
   components: { SIdentify, Footer },
@@ -90,10 +80,11 @@ export default {
       msg: '', // 返回信息提示
       code: '', // text框输入的验证码
       activeIndex: '2',
-      dialogVisible1: false,
-      dialogVisible2: false,
-      handleClose1: false,
-      handleClose2: false,
+      dialogVisible: false,
+      handleClose: false,
+      timer: null,
+      countdown: 5,
+      indexMessage: '返回首页(5s)',
       form: {
         type: {},
         options: [],
@@ -207,6 +198,12 @@ export default {
   created() {
     this.refreshCode()
   },
+  destroyed() {
+    // 每次离开当前界面时，清除定时器
+    clearInterval(this.timer)
+    this.timer = null
+    this.countdown = 5
+  },
   methods: {
     // 验证码
     randomNum(min, max) {
@@ -245,8 +242,17 @@ export default {
           }
           const _data = await toQuestionFeedback(_this.form)
           const _data_ = JSON.parse(JSON.stringify(_data))
-          if (_data_.code === 1) {
+          if (_data_.code === 200) {
             _this.dialogVisible = true
+            clearInterval(_this.timer)
+            _this.timer = null
+            _this.timer = setInterval(() => {
+              _this.countdown--
+              _this.indexMessage = '返回首页(' + _this.countdown + 's)'
+              if (_this.countdown === 0) {
+                _this.$router.push('/')
+              }
+            }, 1000)
           } else {
             _this.$alert(_data_.msg, '温馨提示')
           }
