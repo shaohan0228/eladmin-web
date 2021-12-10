@@ -220,6 +220,12 @@ export const constantRouterMap = [
             component: () => import('@/views/upload/video/Upload'),
             hidden: true,
             meta: { title: '视频上传', activeMenu: '/upload_manage/video' }
+          },
+          {
+            path: 'video/:id/update',
+            component: () => import('@/views/upload/video/Upload'),
+            hidden: true,
+            meta: { title: '视频修改', activeMenu: '/upload_manage/video' }
           }
         ]
       }

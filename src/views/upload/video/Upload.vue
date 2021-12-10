@@ -10,6 +10,7 @@
         <el-form-item label="视频链接" prop="path">
           <el-input v-model="formData.path" style="width: 670px" placeholder="请输入视频下载链接" :disabled="pathInputDisabled" />
           <el-upload
+            v-if="!uploadDisabled"
             ref="upload"
             :limit="1"
             :before-upload="beforeUpload"
@@ -39,7 +40,7 @@
         <el-form-item label="关联功能" prop="categories">
           <el-cascader
             v-model="formData.categories"
-            :disabled="modifyId"
+            :disabled="modifyId && true"
             :props="cascadeProps"
             :show-all-levels="true"
             clearable
@@ -73,7 +74,7 @@
 <script type="text/javascript">
 import { mapGetters } from 'vuex'
 import ItaButton from '../../../components/ItaButton'
-import { updateVideo, uploadVideo } from '../../../api/upload/video'
+import { getUploadVideo, updateVideo, uploadVideo } from '../../../api/upload/video'
 import { getVideoCategories } from '../../../api/dict/dict'
 
 export default {
@@ -98,6 +99,7 @@ export default {
         categories: []
       },
       pathInputDisabled: false,
+      uploadDisabled: false,
       uploadFileName: '',
       uploadFilePaths: [],
       supportFileType: ['.mp4', '.m4a'],
@@ -138,7 +140,25 @@ export default {
     this.modifyId = params.id
     this.companyId = this.$store.getters.user.company_id
   },
+  mounted() {
+    if (this.modifyId) {
+      this.loadVideoInfo(this.modifyId)
+    }
+  },
   methods: {
+    async loadVideoInfo(videoId) {
+      const res = await getUploadVideo(videoId)
+      if (res && res.code === 200) {
+        const { data } = res
+        this.formData.title = data.title
+        this.formData.introduction = data.inntroduce
+        this.pathInputDisabled = true
+        this.uploadDisabled = true
+        this.formData.path = data.video_url_address
+      } else {
+        this.openDialog('错误', '无法获取视频信息', false, () => { this.$routers.push({ path: 'upload_manage/video' }) })
+      }
+    },
     async uploadVideo() {
       this.$refs.uploadForm.validate(async(result) => {
         if (!result) {

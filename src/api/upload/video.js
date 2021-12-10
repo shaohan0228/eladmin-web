@@ -1,17 +1,20 @@
 import request from '@/utils/request'
 
-export function getUploadViedoList(data) {
+export function getUploadVideoList(data) {
   return request({
-    url: `/video/upload/list`,
+    url: `/members/getVideoByHybh`,
     method: 'post',
     data
   })
 }
 
-export function getUploadVideo(id) {
+export function getUploadVideo(videoId) {
   return request({
-    url: '/video/${id}',
-    method: 'get'
+    url: '/members/detailsVideo',
+    method: 'post',
+    data: {
+      videId: videoId
+    }
   })
 }
 export function getUploadDriverListByQuery(data) {
