@@ -106,7 +106,10 @@ export default {
     },
     // 处理页码跳转
     handleCurrentChange(val) {
-      this.tableData.page = val + 1
+      if (val <= 0) {
+        this.tableData.page = 1
+      }
+      this.tableData.page = val
       this.fetchTableData()
     },
     getQueryKnowledgeList(type) {
