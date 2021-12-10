@@ -1,9 +1,9 @@
 <template>
   <div class="main-con">
-    <div class="main-tit">视频上传</div>
+    <div class="main-tit">{{ modifyId ? '视频修改' : '视频上传' }}</div>
     <div class="main-content">
       <!--表单组件-->
-      <el-form ref="formData" size="small" :model="formData" :rules="rules" label-width="100px">
+      <el-form ref="uploadForm" size="small" :model="formData" :rules="rules" label-width="100px">
         <el-form-item label="视频标题" prop="title">
           <el-input v-model="formData.title" style="width: 670px" placeholder="请输入视频标题" />
         </el-form-item>
@@ -20,6 +20,7 @@
             :on-exceed="handleUploadOverLimit"
             :action="fileUploadApi + '?name='"
             :multiple="false"
+            accept=".mp4,.m4v"
             style="width: 670px;"
           >
             <div class=""><i class="el-icon-link" /> 选择附件</div>
@@ -38,8 +39,8 @@
         <el-form-item label="关联功能" prop="categories">
           <el-cascader
             v-model="formData.categories"
-            :options="options"
-            :props="{ multiple: false, checkStrictly: true }"
+            :disabled="modifyId"
+            :props="cascadeProps"
             :show-all-levels="true"
             clearable
             placeholder="请选择关联功能"
@@ -48,18 +49,19 @@
           />
         </el-form-item>
         <el-form-item>
-          <ita-button type="primary" @click.native.prevent="handleUploadForm">提交</ita-button>
+          <ita-button type="primary" @click.native.prevent="uploadVideo">提交</ita-button>
         </el-form-item>
       </el-form>
     </div>
     <el-dialog
       :title="dialogInfo.title"
       :visible.sync="dialogInfo.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
       @closed="dialogClosed"
     >
-      <div>
-        {{ dialogInfo.content }}
-      </div>
+      <div v-html="dialogInfo.content" />
       <div slot="footer" class="dialog-footer">
         <ita-button type="primary" @click="dialogConfirm">确认</ita-button>
         <ita-button v-if="dialogInfo.confirm" @click="dialogCancel">取消</ita-button>
@@ -71,12 +73,16 @@
 <script type="text/javascript">
 import { mapGetters } from 'vuex'
 import ItaButton from '../../../components/ItaButton'
+import { updateVideo, uploadVideo } from '../../../api/upload/video'
+import { getVideoCategories } from '../../../api/dict/dict'
 
 export default {
   name: 'VideoUpload',
   components: { ItaButton },
   data() {
     return {
+      modifyId: null,
+      companyId: null,
       dialogInfo: {
         visible: false,
         title: '提示',
@@ -94,87 +100,14 @@ export default {
       pathInputDisabled: false,
       uploadFileName: '',
       uploadFilePaths: [],
-      options: [{
-        value: 'zhinan',
-        label: '指南',
-        children: [{
-          value: 'shejiyuanze',
-          label: '设计原则',
-          children: [{
-            value: 'yizhi',
-            label: '一致'
-          }, {
-            value: 'fankui',
-            label: '反馈'
-          }, {
-            value: 'xiaolv',
-            label: '效率'
-          }, {
-            value: 'kekong',
-            label: '可控'
-          }]
-        }, {
-          value: 'daohang',
-          label: '导航',
-          children: [{
-            value: 'cexiangdaohang',
-            label: '侧向导航'
-          }, {
-            value: 'dingbudaohang',
-            label: '顶部导航'
-          }]
-        }]
-      }, {
-        value: 'zujian',
-        label: '组件',
-        children: [{
-          value: 'basic',
-          label: 'Basic',
-          children: [{
-            value: 'layout',
-            label: 'Layout 布局'
-          }, {
-            value: 'color',
-            label: 'Color 色彩'
-          }]
-        }, {
-          value: 'form',
-          label: 'Form',
-          children: [{
-            value: 'radio',
-            label: 'Radio 单选框'
-          }, {
-            value: 'checkbox',
-            label: 'Checkbox 多选框'
-          }, {
-            value: 'input',
-            label: 'Input 输入框'
-          }]
-        }, {
-          value: 'data',
-          label: 'Data',
-          children: [{
-            value: 'table',
-            label: 'Table 表格'
-          }, {
-            value: 'tag',
-            label: 'Tag 标签'
-          }]
-        }]
-      }, {
-        value: 'ziyuan',
-        label: '资源',
-        children: [{
-          value: 'axure',
-          label: 'Axure Components'
-        }, {
-          value: 'sketch',
-          label: 'Sketch Templates'
-        }, {
-          value: 'jiaohu',
-          label: '组件交互文档'
-        }]
-      }],
+      supportFileType: ['.mp4', '.m4a'],
+      acceptFile: '.mp4,.m4a',
+      cascadeProps: {
+        multiple: false,
+        checkStrictly: true,
+        lazy: true,
+        lazyLoad: this.loadVideoCategories
+      },
       rules: {
         title: [
           { required: true, message: '请输入视频标题', trigger: 'blur' },
@@ -200,12 +133,81 @@ export default {
       'fileUploadApi'
     ])
   },
+  created() {
+    const { params } = this.$route
+    this.modifyId = params.id
+    this.companyId = this.$store.getters.user.company_id
+  },
   methods: {
+    async uploadVideo() {
+      this.$refs.uploadForm.validate(async(result) => {
+        if (!result) {
+          return
+        }
+        const updateParams = {
+          introduce: this.formData.introduction,
+          address: this.formData.path,
+          title: this.formData.title
+        }
+
+        let uploadResult
+        if (this.modifyId) {
+          updateParams.videoId = this.modifyId
+          uploadResult = await updateVideo(updateParams)
+        } else {
+          updateParams.company_id = this.companyId
+          updateParams.equipment_id = this.formData.categories[this.formData.categories.length - 1]
+          uploadResult = await uploadVideo(updateParams)
+        }
+
+        if (uploadResult && uploadResult.code === 200) {
+          this.openDialog(
+            '成功',
+            '视频上传成功，点击确定返回列表页面',
+            false,
+            () => { this.$router.push({ path: '/upload_manage/video' }) },
+          )
+        } else {
+          this.openDialog(
+            '失败',
+            `视频上传失败, 原因： ${uploadResult.msg} 。<br/> 点击确定返回列表页面`,
+            false,
+            () => { this.$router.push({ path: '/upload_manage/video' }) }
+          )
+        }
+      })
+    },
+    async loadVideoCategories(node, resolve) {
+      const { value } = node
+      await getVideoCategories(this.companyId, value).then((res) => {
+        const _result = res.data.contents
+        const nodes = _result.map((_item) => {
+          return {
+            label: _item.type_name,
+            value: _item.knowledge_type_id
+          }
+        })
+        if (nodes.length === 0) {
+          resolve()
+        } else {
+          resolve(nodes)
+        }
+      }).catch(() => {
+        resolve([])
+      })
+    },
     // 上传文件
     upload() {
       this.$refs.upload.submit()
     },
     beforeUpload(file) {
+      const fileExt = file.name.substring(file.name.lastIndexOf('.'))
+      if (!(this.supportFileType.indexOf(fileExt) >= 0)) {
+        this.loading = false
+        this.$message.error(`视频仅支持 ${this.supportFileType.join(', ')} 类型 `)
+        return false
+      }
+
       if (this.formData.path) {
         this.loading = false
         this.$message.error('如果您指定了下载地址，则不能再上传文件')
@@ -222,9 +224,9 @@ export default {
     },
     handleUploadSuccess(response, file, fileList) {
       this.uploadFilePaths.push(response.data[0])
-      // 生成一个伪地址
-      this.formData.path = URL.createObjectURL(file.raw)
+      this.formData.path = response.data[0]
       this.pathInputDisabled = true
+      this.$refs.uploadForm.validateField('path')
     },
     // 监听上传失败
     handleUploadError(e, file, fileList) {
@@ -238,16 +240,16 @@ export default {
     },
     // 监听上传文件移除
     handleUploadRemove(file, fileList) {
-      this.uploadFilePaths = this.$_.remove(this.uploadFilePaths, file.response.data[0])
-      this.pathInputDisabled = false
-      this.formData.path = ''
+      if (file.response) {
+        this.uploadFilePaths = this.$_.remove(this.uploadFilePaths, file.response.data[0])
+        this.pathInputDisabled = false
+        this.formData.path = ''
+      }
     },
     // 监听上传文件超过数量限制
     handleUploadOverLimit(files, fileList) {
       this.$message.error('只支持单个文件上传，请删除当前文件后再重新上传')
       // this.openDialog('提示', '只支持单个文件上传，请删除当前文件后再重新上传', false)
-    },
-    handleUploadForm() {
     },
     openDialog(title, content, confirm, confirmCallback, cancelCallback) {
       this.dialogInfo.title = title || this.dialogInfo.title

@@ -13,8 +13,7 @@
         <el-form-item label="关联功能" prop="categories">
           <el-cascader
             v-model="formData.categories"
-            :options="options"
-            :props="{ multiple: false, checkStrictly: true }"
+            :props="cascadeProps"
             :show-all-levels="true"
             clearable
             placeholder="请选择关联功能"
@@ -47,6 +46,12 @@ export default {
         title: '',
         content: '',
         categories: []
+      },
+      cascadeProps: {
+        multiple: false,
+        checkStrictly: true,
+        lazy: true,
+        lazyLoad: this.loadKnowledgeCategories
       },
       options: [{
         value: 'zhinan',
@@ -208,6 +213,11 @@ export default {
     }
   },
   methods: {
+    loadKnowledgeCategories(node, resolve) {
+      const { value } = node
+      console.log(JSON.stringify(value))
+      resolve([])
+    },
     async getKnowledge(id) {
       const { data: knowledgeInfo } = await getUploadKnowledge(id)
       this.formData = knowledgeInfo

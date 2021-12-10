@@ -1,6 +1,6 @@
 <template>
   <div class="main-con">
-    <div class="main-tit">驱动上传</div>
+    <div class="main-tit">{{ modifyId ? '驱动修改' : '驱动上传' }}</div>
     <div class="main-content">
       <!--表单组件-->
       <el-form ref="uploadForm" size="small" :model="uploadForm" :rules="rules" label-width="100px">
@@ -8,15 +8,18 @@
           <el-input v-model="uploadForm.driverName" style="width: 670px" placeholder="请输入驱动标题" />
         </el-form-item>
         <el-form-item label="驱动链接" prop="driverPath">
-          <el-input v-model="uploadForm.driverPath" :value="imageURL" style="width: 670px" placeholder="请输入驱动下载链接" />
+          <el-input v-model="uploadForm.driverPath" :value="imageURL" style="width: 670px" placeholder="请输入驱动下载链接" :disabled="pathInputDisabled" />
           <el-upload
             ref="upload"
             :limit="1"
             :before-upload="beforeUpload"
             :auto-upload="true"
-            :on-success="handleSuccess"
-            :on-error="handleError"
-            :action="fileUploadApi"
+            :on-success="handleUploadSuccess"
+            :on-error="handleUploadError"
+            :on-remove="handleUploadRemove"
+            :on-exceed="handleUploadOverLimit"
+            :action="fileUploadApi + '?name='"
+            :multiple="false"
             style="width: 670px;"
           >
             <div class=""><i class="el-icon-link" /> 附件上传</div>
@@ -28,8 +31,8 @@
         </el-form-item>
         <el-form-item label="关联功能" prop="driverConnection">
           <el-cascader
-            :options="options"
-            :props="{ multiple: false, checkStrictly: true }"
+            v-model="uploadForm.categories"
+            :props="cascadeProps"
             :show-all-levels="true"
             clearable
             placeholder="请选择关联功能"
@@ -42,19 +45,52 @@
         </el-form-item>
       </el-form>
     </div>
+    <el-dialog
+      :title="dialogInfo.title"
+      :visible.sync="dialogInfo.visible"
+      @closed="dialogClosed"
+    >
+      <div>
+        {{ dialogInfo.content }}
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <ita-button type="primary" @click="dialogConfirm">确认</ita-button>
+        <ita-button v-if="dialogInfo.confirm" @click="dialogCancel">取消</ita-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script type="text/javascript">
 import { mapGetters } from 'vuex'
-import CRUD from '@crud/crud'
 export default {
   name: 'DriverUpload',
   data() {
     return {
-      uploadForm: { driverName: '', driverPath: '', driverIntroduction: '', driverConnection: '' },
-      fileList: [],
-      imageURL: '',
+      modifyId: null,
+      dialogInfo: {
+        visible: false,
+        title: '提示',
+        confirm: false,
+        content: '提示信息',
+        confirmCallback: undefined,
+        cancelCallback: undefined
+      },
+      uploadForm: {
+        driverName: '',
+        driverPath: '',
+        driverIntroduction: '',
+        driverConnection: ''
+      },
+      pathInputDisabled: false,
+      uploadFileName: '',
+      uploadFilePaths: [],
+      cascadeProps: {
+        multiple: false,
+        checkStrictly: true,
+        lazy: true,
+        lazyLoad: this.loadDriverCategories
+      },
       options: [{
         value: 'zhinan',
         label: '指南',
@@ -162,29 +198,43 @@ export default {
       'fileUploadApi'
     ])
   },
+  created() {
+    const { params } = this.$route
+    this.modifyId = params.id
+  },
   methods: {
+    handleUploadForm() {
+    },
+    loadDriverCategories(node, resolve) {
+      // const { value } = node
+      resolve([])
+    },
     // 上传文件
     upload() {
       this.$refs.upload.submit()
     },
     beforeUpload(file) {
+      if (this.uploadForm.driverPath) {
+        this.loading = false
+        this.$message.error('如果您指定了下载地址，则不能再上传文件')
+        return false
+      }
       let isLt2M = true
       isLt2M = file.size / 1024 / 1024 < 100
       if (!isLt2M) {
         this.loading = false
         this.$message.error('上传文件大小不能超过 100MB!')
       }
-
+      // this.fileName = file.name
       return isLt2M
     },
-    handleSuccess(response, file, fileList) {
-      this.imageURL = URL.createObjectURL(file.raw)
-      this.crud.notify('上传成功', CRUD.NOTIFICATION_TYPE.SUCCESS)
-      this.$refs.upload.clearFiles()
-      this.crud.resetForm()
+    handleUploadSuccess(response, file, fileList) {
+      this.uploadFilePaths.push(response.data[0])
+      this.uploadForm.driverPath = response.data[0]
+      this.pathInputDisabled = true
     },
     // 监听上传失败
-    handleError(e, file, fileList) {
+    handleUploadError(e, file, fileList) {
       const msg = JSON.parse(e.message)
       this.$notify({
         title: msg.message,
@@ -193,7 +243,45 @@ export default {
       })
       this.loading = false
     },
-    handleUploadForm() {
+    // 监听上传文件移除
+    handleUploadRemove(file, fileList) {
+      this.uploadFilePaths = this.$_.remove(this.uploadFilePaths, file.response.data[0])
+      this.pathInputDisabled = false
+      this.uploadForm.driverPath = ''
+    },
+    // 监听上传文件超过数量限制
+    handleUploadOverLimit(files, fileList) {
+      this.$message.error('只支持单个文件上传，请删除当前文件后再重新上传')
+      // this.openDialog('提示', '只支持单个文件上传，请删除当前文件后再重新上传', false)
+    },
+    openDialog(title, content, confirm, confirmCallback, cancelCallback) {
+      this.dialogInfo.title = title || this.dialogInfo.title
+      this.dialogInfo.content = content || this.dialogInfo.content
+      this.dialogInfo.confirm = confirm || false
+      this.dialogInfo.confirmCallback = confirmCallback
+      this.dialogInfo.cancelCallback = cancelCallback
+      this.$nextTick(() => {
+        this.dialogInfo.visible = true
+      })
+    },
+    dialogClosed() {
+      this.dialogInfo.title = '提示'
+      this.dialogInfo.confirm = false
+      this.dialogInfo.content = '提示信息'
+      this.dialogInfo.confirmCallback = undefined
+      this.dialogInfo.cancelCallback = undefined
+    },
+    dialogConfirm() {
+      if (this.dialogInfo.confirmCallback) {
+        this.dialogInfo.confirmCallback.call()
+      }
+      this.dialogInfo.visible = false
+    },
+    dialogCancel() {
+      if (this.dialogInfo.cancelCallback) {
+        this.dialogInfo.cancelCallback.call()
+      }
+      this.dialogInfo.visible = false
     }
   }
 }

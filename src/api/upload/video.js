@@ -42,3 +42,19 @@ export function getVideoInfo(firmId) {
     method: 'get'
   })
 }
+
+export function uploadVideo(data) {
+  return request({
+    url: '/members/uploadVideo',
+    method: 'post',
+    data
+  })
+}
+
+export function updateVideo(data) {
+  return request({
+    url: '/members/updateVideo',
+    method: 'post',
+    data
+  })
+}

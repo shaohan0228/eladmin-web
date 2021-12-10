@@ -9,7 +9,7 @@
         <!--        <el-button class="common-btn ydregbtn" type="primary" round el-icon-edit>注册</el-button>-->
         <el-dropdown v-if="isLogin">
           <span class="el-dropdown-link">
-            18323562356<i class="el-icon-arrow-down el-icon--right" />
+            {{ user.name }}<i class="el-icon-arrow-down el-icon--right" />
           </span>
           <el-dropdown-menu slot="dropdown">
             <router-link to="/user/center">
@@ -113,6 +113,7 @@
 
 <script>
 import { getToken } from '@/utils/auth'
+import { mapGetters } from 'vuex'
 
 export default {
   data() {
@@ -120,6 +121,11 @@ export default {
       isLogin: false,
       userRole: ''
     }
+  },
+  computed: {
+    ...mapGetters([
+      'user'
+    ])
   },
   mounted() {
     this.isLogin = getToken() && true
