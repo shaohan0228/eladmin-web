@@ -11,19 +11,18 @@
           <div class="drive-sx">
             <el-form ref="query" label-width="80px">
               <el-form-item label="厂商：" class="mbottom10">
-                <!-- <el-button type="text" class="g333"  >{{item.firmName}}</el-button>-->
-                <el-radio-group v-model="query.contents.firmValue">
-                  <el-radio-button v-for="item in firmList" :key="item.firmValue" v-model="firmList" class="g333" :label="item.firmName" />
+                <el-radio-group v-model="query.company_id">
+                  <el-radio-button v-for="item in firmList" :key="item.company_id" v-model="firmList" class="g333" :label="item.company_id" @change="checklist">{{ item.company_name }}</el-radio-button>
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="分类：" class="mbottom0">
-                <el-checkbox-group v-model="query.contents.checkName">
-                  <el-checkbox v-for="(item,i) in checklist" :key="i" v-model="checklist" :label="item.checkName">{{ item.checkName }}</el-checkbox>
+                <el-checkbox-group v-model="equipment_id_Array">
+                  <el-checkbox v-for="(item) in checklist" :key="item.equipment_id" v-model="checklist" :label="item.equipment_id">{{ item.equipment_name }}</el-checkbox>
                 </el-checkbox-group>
               </el-form-item>
             </el-form>
             <div class="drive-search">
-              <el-input v-model="query.contents.queryValue" class="w600" placeholder="请输入内容" />
+              <el-input v-model="query.serchemes" class="w600" placeholder="请输入内容" />
               <el-button class="redbtn" @click.native.prevent="handleDriverForm">搜索</el-button>
             </div>
           </div>
@@ -31,25 +30,25 @@
             <div class="drive-list-con">
               <div v-for="(item,i) in tableData.contents" :key="i" class="drive-list-item clearfix">
                 <div class="drive-list-item-left">
-                  <img :src="item.imgpath" width="52" alt="">
+                  <img :src="imgpath" width="52" alt="">
                   <div class="fsize12 g1e7bf4">{{ item.size }}</div>
                 </div>
                 <div class="drive-list-item-right">
-                  <div class="drive-list-tit">{{ item.title }}</div>
-                  <div class="drive-list-txt mtop10">{{ item.remark }}</div>
+                  <div class="drive-list-tit">{{ item.name }}</div>
+                  <div class="drive-list-txt mtop10">{{ item.introduce }}</div>
                   <div class="drive-list-tip text-left mtop20 g999">
-                    <span class="mright15">{{ item.num }}人下载</span><span>{{ item.author }}</span>
-                    <el-button type="text" class="downbtn pull-right" @click="dowmload(item.path,item.id)">下载</el-button>
+                    <span class="mright15">{{ item.amount }}人下载</span><span>{{ item.username }}</span>
+                    <el-button type="text" class="downbtn pull-right" @click="dowmload(item.address,item.drive_id)">下载</el-button>
                   </div>
                 </div>
               </div>
             </div>
             <el-pagination
-              :current-page="currentPage4"
               :page-sizes="[10, 20, 30, 40]"
-              :page-size="100"
+              :total="tableData.total"
+              :page-size="tableData.size"
+              :current-page="tableData.page"
               layout="total, sizes, prev, pager, next, jumper"
-              :total="100"
               class="mtop20 mright30 text-right"
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
@@ -60,15 +59,19 @@
           <div class="downranking">
             <div class="fsize18 g333 mtop10">下载排行榜</div>
             <el-table :data="downrankingList" class="mtop20" style="width: 100%;">
-              <el-table-column prop="index" label="排名" width="50" />
-              <el-table-column prop="tit" label="标题" width="150" />
-              <el-table-column prop="number" label="下载次数" />
+              <el-table-column label="排名" width="50">
+                <template slot-scope="scope">
+                  {{ scope.$index+1 }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="标题" width="150" />
+              <el-table-column prop="amount" label="下载次数" />
               <el-table-column
                 label="操作"
                 width="60"
               >
                 <template slot-scope="scope">
-                  <el-button type="text" class="downbtn" @click="dowmload(scope.row.path,scope.row.id)">下载</el-button>
+                  <el-button type="text" class="downbtn" @click="dowmload(scope.row.address,scope.row.drive_id)">下载</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -89,132 +92,80 @@ export default {
   data() {
     return {
       query: {
-        contents: {
-          firmName: '',
-          queryValue: undefined,
-          checkName: []
-        },
-        page: 0,
-        size: 10,
-        total: 0
+        company_id: '',
+        serchemes: '',
+        equipment_id: '',
+        pageNum: 1,
+        showCount: 10
       },
-      driverMap: { driverId: 0 },
+      equipment_id_Array: [],
+      driverMap: { driverID: 0 },
       driverPath: driverPath,
+      imgpath: driverPath,
       tableData: {
         total: 0,
         size: 10,
-        page: 0,
+        page: 1,
         contents: [
-          {
-            imgpath: driverPath,
-            size: '56.53MB',
-            title: 'Intel驱动下载Intel驱动下载Intel',
-            remark: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载载Intel驱动下Intel驱动下载Intel驱动',
-            num: 350,
-            author: '河南省信创综合服务保障中心',
-            path: 'http://gainetsoftwares.kuaiyunds.com/gainetsoftwares/filezilla3d0899f3-d291-4714-bd45-027ffaa49962.zip'
-          },
-          {
-            imgpath: driverPath,
-            size: '5MB',
-            title: 'Intel驱动下载Intel驱动下载Intel驱动下载ntel驱动下载ntel驱动下载',
-            remark: 'Intel驱动下载Intel驱动下载Intel驱动Intel驱动',
-            num: 30,
-            author: '河南省信创综合服务保障中心',
-            path: 'http://gainetsoftwares.kuaiyunds.com/gainetsoftwares/filezilla3d0899f3-d291-4714-bd45-027ffaa49962.zip'
-          },
-          {
-            imgpath: driverPath,
-            size: '6MB',
-            title: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载ntel驱动下载ntel驱动下载',
-            remark: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下',
-            num: 40,
-            author: '河南省信创综合服务保障中心',
-            path: 'http://gainetsoftwares.kuaiyunds.com/gainetsoftwares/filezilla3d0899f3-d291-4714-bd45-027ffaa49962.zip'
-          },
-          {
-            imgpath: driverPath,
-            size: '0.53MB',
-            title: 'Intel驱动下载Intel驱动下载IndfhssSfgs双方各el驱动下载Intel驱动下载ntel驱动下载ntel驱动下载',
-            remark: 'Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载Intel驱动下载载Intel驱',
-            num: 38,
-            author: '河南省信创综合服务保障中心',
-            path: 'http://gainetsoftwares.kuaiyunds.com/gainetsoftwares/filezilla3d0899f3-d291-4714-bd45-027ffaa49962.zip'
-          }
         ]
       },
-      checklist: [
-        { checkName: 'CPU', checkValue: '1' },
-        { checkName: '内存', checkValue: '2' }
-      ],
-      downrankingList: [{
-        id: 1,
-        path: 'http://gainetsoftwares.kuaiyunds.com/gainetsoftwares/filezilla3d0899f3-d291-4714-bd45-027ffaa49962.zip',
-        index: '1',
-        tit: '《大数据工程师必读手册工程师必读 手册》',
-        number: '89999'
-      }, {
-        id: 2,
-        path: 'http://gainetsoftwares.kuaiyunds.com/gainetsoftwares/filezilla3d0899f3-d291-4714-bd45-027ffaa49962.zip',
-        index: '2',
-        tit: '《大数据工程师必读手册》',
-        number: '89999'
-      }, {
-        id: 3,
-        path: 'http://gainetsoftwares.kuaiyunds.com/gainetsoftwares/filezilla3d0899f3-d291-4714-bd45-027ffaa49962.zip',
-        index: '3',
-        tit: '《大数据工程师必读手册》',
-        number: '89999'
-      }, {
-        id: 4,
-        path: 'http://gainetsoftwares.kuaiyunds.com/gainetsoftwares/filezilla3d0899f3-d291-4714-bd45-027ffaa49962.zip',
-        index: '4',
-        tit: '《大数据工程师必读手册》',
-        number: '89999'
-      }, {
-        id: 5,
-        path: 'http://gainetsoftwares.kuaiyunds.com/gainetsoftwares/filezilla3d0899f3-d291-4714-bd45-027ffaa49962.zip',
-        index: '5',
-        tit: '《大数据工程师必读手册》',
-        number: '89999'
-      }],
-      firmList: [
-        { firmName: '鲲鹏', firmValue: '1' },
-        { firmName: '龙芯MIPS', firmValue: '2' }
-      ]
+      checklist: [],
+      firmList: [],
+      downrankingList: []
     }
   },
   async mounted() {
-    /* this.getFirmList()
     this.getKownrankingList()
-    await this.getCheckList()
-    await this.fetchTableData()*/
+    this.getFirmList()
+    await this.handleDriverForm()
   },
   methods: {
     // 获取厂商列表
     getFirmList() {
-      this.checklist = getFirmList()
+      getFirmList().then(res => {
+        if (res && res.code === 200) {
+          this.firmList = res.data.contents
+          console.log('this.firmList[0]:' + this.firmList[0].company_id)
+          this.query.company_id = this.firmList[0].company_id
+          this.getCheckList()
+        } else {
+          Notification.success(`${res.msg || '发生错误'}`)
+        }
+      })
     },
     // 根据厂商获取分类
     getCheckList() {
-      this.checklist = getCheckList(this.query.contents.firmValue)
+      getCheckList(this.query.company_id).then(res => {
+        if (res && res.code === 200) {
+          this.checklist = res.data.contents
+          this.equipment_id_Array = [this.checklist[0].equipment_id]
+        } else {
+          Notification.success(`${res.msg || '发生错误'}`)
+        }
+      })
     },
     // 下载排行
     getKownrankingList() {
-      this.downrankingList = getKownrankingList()
+      getKownrankingList().then(res => {
+        if (res && res.code === 200) {
+          this.downrankingList = res.data.contents
+        } else {
+          Notification.success(`${res.msg || '发生错误'}`)
+        }
+      })
     },
     // 获取表格数据
     async handleDriverForm() {
-      const result = await getUploadDriverListByQuery(this.query)
-      const { page, total, size, contents } = result.data
-      for (let i = 0; i < contents.length; i++) {
-        const _item = contents[i]
-        _item.nodes = []
-        _item.params = undefined
-        _item.customParams = undefined
-        _item.expandLoading = false
-      }
-      this.tableData = { page: page + 1, total, size, contents }
+      this.query.equipment_id = this.equipment_id_Array.join(',')
+      getUploadDriverListByQuery(this.query).then(res => {
+        if (res && res.code === 200) {
+          const { page, total, size, contents } = res.data
+          this.tableData = { page: page + 1, total, size, contents }
+          console.log('tableData:' + this.tableData.contents)
+        } else {
+          Notification.success(`${res.msg || '发生错误'}`)
+        }
+      })
     },
     // 处理页面pagesize变化
     handleSizeChange(val) {
@@ -227,13 +178,11 @@ export default {
       this.handleDriverForm()
     },
     dowmload(linkPath, id) {
-      console.info('linkPath: ' + linkPath + ',id:' + id)
       const link = document.createElement('a')
       link.style.display = 'none'
       link.href = linkPath
       link.click()
-      this.driverMap.driverId = id
-      addDownloadCount(this.driverMap)
+      addDownloadCount(id)
     }
   }
 }

@@ -44,33 +44,19 @@ export function getKnowListByKnowId(knowId) {
 }
 export function getKnowSearchList(data) {
   return request({
-    url: '/knowledge/getKnowSearchList',
+    url: '/members/getKnowledgeList',
     method: 'post',
     data
   })
 }
-export function getKnowListByKnowType(data) {
+
+export function getKnowCheck(pid) {
   return request({
-    url: '/knowledge/getKnowListByKnowType',
+    url: `/members/getKnowledgetype`,
     method: 'post',
-    data
+    data: {
+      pid: pid
+    }
   })
 }
-export function getKnowCheck1() {
-  return request({
-    url: `/knowledge/getKnowCheck1`,
-    method: 'get'
-  })
-}
-export function getKnowCheck2(key) {
-  return request({
-    url: `/knowledge/getKnowCheck2/${key}`,
-    method: 'get'
-  })
-}
-export function getKnowCheck3(key) {
-  return request({
-    url: `/knowledge/getKnowCheck3/${key}`,
-    method: 'get'
-  })
-}
+

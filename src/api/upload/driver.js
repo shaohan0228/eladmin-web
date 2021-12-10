@@ -16,36 +16,37 @@ export function getUploadDriver(id) {
 }
 export function getUploadDriverListByQuery(data) {
   return request({
-    url: `/driver/upload/list`,
+    url: `/members/getDrive`,
     method: 'post',
     data
   })
 }
 
-export function getCheckList(firmId) {
+export function getCheckList(companyId) {
   return request({
-    url: `/driver/classify/${firmId}`,
-    method: 'get'
+    url: `members/getEquipmentBYCompany`,
+    method: 'post',
+    data: { company_id: companyId, pid: 0 }
   })
 }
 export function getKownrankingList() {
   return request({
-    url: `/driver/KownrankingList`,
-    method: 'get'
+    url: `/members/secondDriver`,
+    method: 'post'
   })
 }
-
+// 获取厂商列表
 export function getFirmList() {
   return request({
-    url: `/driver/FirmList`,
-    method: 'get'
+    url: `/members/GetManufacturerList`,
+    method: 'post'
   })
 }
-export function addDownloadCount(data) {
+export function addDownloadCount(driverId) {
   return request({
-    url: `/driver/addDownloadCount`,
+    url: `/members/downDriver`,
     method: 'post',
-    data
+    data: { driverID: driverId }
   })
 }
 
