@@ -45,12 +45,22 @@
                 <el-breadcrumb-item v-else>知识列表</el-breadcrumb-item>
               </el-breadcrumb>
               <ul class="detaillist mtop20">
-                <li v-for="(item, index) in knowledgeList" :key="index">
+                <li v-for="(item, index) in tableData.contents" :key="index">
                   <span class="dian" />
-                  <span @click="getKnowledgeDetails(item.id)" v-html="item.title" />
+                  <span @click="getKnowledgeDetails(item.knowledge_id)" v-html="item.problem_description" />
                 </li>
               </ul>
             </div>
+            <el-pagination
+              layout="total, sizes, prev, pager, next, jumper"
+              class="text-right mt-6"
+              :page-sizes="[10, 20, 30, 40]"
+              :total="tableData.total"
+              :page-size="tableData.size"
+              :current-page="tableData.page"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+            />
           </el-main>
         </el-container>
       </el-container>
@@ -58,34 +68,49 @@
   </div>
 </template>
 <script>
+import { getKnowledgeList } from '@/api/knowledge/knowledge'
+
 export default {
   data() {
     return {
       type: '0',
       title: '信创知识详情',
-      knowledgeList: [
-        {
-          'id': 1,
-          'title': '信创知识信创知识信创'
+      tableData: {
+        query: {
         },
-        {
-          'id': 2,
-          'title': '信创知识信创知识221信创'
-        },
-        {
-          'id': 3,
-          'title': '信创知识信112创知识2'
-        }
-      ]
+        total: 0,
+        size: 10,
+        page: 1,
+        contents: []
+      }
     }
   },
   created() {
     const { params } = this.$route
     this.type = params.type || this.type
   },
+  async mounted() {
+    await this.fetchTableData()
+  },
   methods: {
-    getKnowledgeList() {
-      console.log('获取知识查询列表')
+    // 获取表格数据
+    async fetchTableData() {
+      const result = await getKnowledgeList(this.tableData)
+      const { page, total, size, contents } = result.data
+      this.tableData = { page, total, size, contents }
+    },
+    // 处理页面pagesize变化
+    handleSizeChange(val) {
+      this.tableData.size = val
+      this.fetchTableData()
+    },
+    // 处理页码跳转
+    handleCurrentChange(val) {
+      if (val <= 0) {
+        this.tableData.page = 1
+      }
+      this.tableData.page = val
+      this.fetchTableData()
     },
     getQueryKnowledgeList(type) {
       this.$router.push('/resources/knowledge/' + type + '/list')

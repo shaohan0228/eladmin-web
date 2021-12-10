@@ -58,18 +58,17 @@
   </div>
 </template>
 <script>
+import { getKnowledgeDetails } from '@/api/knowledge/knowledge'
+
 export default {
   data() {
     return {
       id: null,
       type: 0,
-      title: '信创知识详情',
-      date: '更新时间：2021-11-19 11:27:06',
-      readNumber: '阅读量:3005',
-      contents: '<img src="../../../../static/img/loginbg.c6d0e494.png" alt="">' +
-        ' <p class="fsize16 g666 mtop20">12月7日下午，市委理论学习中心组召开（扩大）学习会议，深入学习贯彻党的十九届六中全会精神。市委书记胡涛主持会议并讲话。市长周鹏举、市人大常委会主任付志宏、市政协主席张盈围绕学习贯彻党的十九届六中全会精神作交流发言。</p>' +
-        ' <p class="fsize16 g666 mtop20">会议指出，党的十九届六中全会是在中国共产党成立一百周年的重要历史时刻，在党领导人民实现第一个百年奋斗目标、向着第二个百年奋斗目标迈进的重大历史关头，召开的一次具有重大历史意义的会议。全会通过的《中共中央关于党的百年奋斗重大成就和历史经验的决议》是一篇光辉的马克思主义纲领性文献，是新时代中国共产党人牢记初心使命、坚持和发展中国特色社会主义的政治宣言，是以史为鉴、开创未来、实现中华民族伟大复兴的行动指南。全市各级党组织和广大党员干部要深刻领会党的十九届六中全会的重大意义，深刻理解《决议》的历史把握和深远考量，准确把握党的历史发展主题主线、主流本质，更加自觉地统一思想、统一意志、统一行动，强化历史自觉，践行初心使命，在实现中华民族伟大复兴进程中，跑好我们这代人的这一棒。</p>' +
-        ' <p class="fsize16 g666 mtop20">会议强调，要进一步加深对“两个确立”的决定性意义，党的百年奋斗的伟大成就，党的百年奋斗形成的理论创新成果，党的百年奋斗的历史经验，以史为鉴、开创未来的重要要求等方面内容的领会把握，进一步增强“四个意识”、坚定“四个自信”、做到“两个维护”，不断从党的奋斗历程中汲取智慧和力量，以更加昂扬的姿态走好新时代阜新转型之路，奋力谱写实现中华民族伟大复兴中国梦的阜新篇章。</p>'
+      title: '内容详情',
+      date: '更新时间：-- ',
+      readNumber: '阅读量:0',
+      contents: ''
     }
   },
   created() {
@@ -77,9 +76,20 @@ export default {
     this.id = params.id
     this.type = params.type
   },
+  mounted() {
+    this.getDetails()
+  },
   methods: {
-    getDetails() {
-      console.log(this.id)
+    async getDetails() {
+      const result = await getKnowledgeDetails(this.id)
+      if (result.code === 200) {
+        this.readNumber = '阅读量:' + result.data.click_num
+        this.title = result.data.problem_description
+        this.date = '更新时间：' + result.data.update_time
+        this.contents = result.data.problem_solution
+      } else {
+        this.contents = '<p class="fsize16 g666 mtop20">暂无数据，请刷新重试！</p><img src="../../../../static/img/loginbg.c6d0e494.png" alt="">'
+      }
     },
     getQueryKnowledgeList(type) {
       this.$router.push('/resources/knowledge/' + type + '/list')
