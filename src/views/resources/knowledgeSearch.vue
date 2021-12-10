@@ -4,32 +4,32 @@
       <div class="know-top">
         <el-form ref="query" label-width="80px">
           <el-form-item label="分类一：" class="mbottom10">
-            <el-radio-group ref="check1" v-model="knowForm.query.check1">
-              <el-radio-button v-for="item in checklist1" :key="item.value" class="g333" :label="item.value" @change="getKnowCheck2(item.value)">{{ item.name }}</el-radio-button>
+            <el-radio-group ref="check1" v-model="check1" @change="getKnowCheck2()">
+              <el-radio-button v-for="item in checklist1" :key="item.knowledge_type_id" class="g333" :label="item.knowledge_type_id">{{ item.type_name }}</el-radio-button>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="分类二：" class="mbottom10">
-            <el-radio-group v-model="knowForm.query.check2">
-              <el-radio-button v-for="item in checklist2" :key="item.value" class="g333" :label="item.value" @change="getKnowCheck3(item.value)">{{ item.name }}</el-radio-button>
+            <el-radio-group v-model="check2" @change="getKnowCheck3()">
+              <el-radio-button v-for="item in checklist2" :key="item.knowledge_type_id" class="g333" :label="item.knowledge_type_id">{{ item.type_name }}</el-radio-button>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="分类三：" class="mbottom0">
-            <el-radio-group v-model="knowForm.query.check3">
-              <el-radio-button v-for="item in checklist3" :key="item.value" class="g333" :label="item.value">{{ item.name }}</el-radio-button>
+            <el-radio-group v-model="check3">
+              <el-radio-button v-for="item in checklist3" :key="item.knowledge_type_id" class="g333" :label="item.knowledge_type_id">{{ item.type_name }}</el-radio-button>
             </el-radio-group>
           </el-form-item>
         </el-form>
       </div>
       <div class="know-search mtop20">
-        <el-input v-model="knowForm.query.queryKey" class="w600" placeholder="请输入内容" />
+        <el-input v-model="query.serchemes" class="w600" placeholder="请输入内容" />
         <el-button class="redbtn" @click="getKnowSearchList">搜索</el-button>
       </div>
       <div class="knowlist mtop40">
         <div class="knowlist">
-          <div v-for="item in tableData.data" :key="item" class="knowlist-item" @click="goKnowDetail(item.problemId,item.knowId)">
-            <div class="knowlist-item-tit">{{ item.title }}</div>
+          <div v-for="item in tableData.contents" :key="item.id" class="knowlist-item" @click="goKnowDetail(item.knowledge_id,0)">
+            <div class="knowlist-item-tit">{{ item.problem_description }}</div>
             <div class="knowlist-item-txt">
-              {{ item.remark }}
+              {{ item.problem_solution }}
             </div>
             <div class="knowlist-item-dec">
               来源： {{ item.source }}
@@ -38,12 +38,12 @@
         </div>
       </div>
       <el-pagination
-        :current-page="currentPage4"
         :page-sizes="[10, 20, 30, 40]"
-        :page-size="100"
+        :total="tableData.total"
+        :page-size="tableData.size"
+        :current-page="tableData.page"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="100"
-        class="mtop30 mright30 text-right"
+        class="mtop20 mright30 text-right"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
@@ -53,94 +53,110 @@
 </template>
 <script>
 import Footer from '@/components/Footer'
-import { getHotKeyList, getKnowSearchList, getKnowCheck1, getKnowCheck2, getKnowCheck3 } from '../../api/upload/knowledge'
+import { getHotKeyList, getKnowSearchList, getKnowCheck } from '../../api/upload/knowledge'
 export default {
   components: { Footer },
   data() {
     return {
-      checklist3: [{ name: 'CPU2', value: '1' }, { name: '网卡2', value: '2' }],
-      checklist2: [{ name: 'CPU1', value: '1' }, { name: '网卡1', value: '2' }],
-      checklist1: [{ name: 'CPU0', value: '1' }, { name: '网卡0', value: '2' }],
-      knowForm: {
-        query: {
-          check3: '',
-          check2: '',
-          check1: '',
-          queryKey: ''
-        },
-        total: 0,
-        size: 10,
-        page: 0
+      checklist3: [],
+      checklist2: [],
+      checklist1: [],
+      check3: '',
+      check2: '',
+      check1: '',
+      query: {
+        typeid: '',
+        serchemes: '',
+        showCount: 10,
+        pageNum: 1
       },
       tableData: {
         total: 0,
         size: 10,
         page: 0,
-        data: [
-          { knowId: 1, problemId: 1, title: '接口调用说明', remark: '适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中', source: 'web开发 > URI API > 开发指南 > 接口调用说明' },
-          { knowId: 1, problemId: 2, title: '接口调用说明', remark: '适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中', source: 'web开发 > URI API > 开发指南 > 接口调用说明' },
-          { knowId: 1, problemId: 3, title: '接口调用说明', remark: '适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中', source: 'web开发 > URI API > 开发指南 > 接口调用说明' },
-          { knowId: 1, problemId: 4, title: '接口调用说明', remark: '适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中适用于在手机端APP 和 手机浏览器中', source: 'web开发 > URI API > 开发指南 > 接口调用说明' }
-        ]
+        contents: []
       }
     }
   },
-  /* directives: {
-    trigger: {
-      bind(el, binging) {
-        console.log(el.value)
-        el.value === 1 ? el.click() : null // 只点击第一个，id是在循环中手动添加的
-        // $(el).trigger('click') // 所有都触发一次,然后就是最后一个
-      }
-    }
-  },*/
   async mounted() {
-    getKnowCheck1()
+    this.getKnowCheck1()
     /* this.getHotKeyList()
    this.getKnowSearchList()*/
+    this.getKnowSearchList()
   },
   methods: {
     // 获取分类一
     getKnowCheck1() {
-      this.checklist1 = getKnowCheck1()
-      if (this.checklist1 != null && this.knowForm.query.check1 == null) {
-        this.knowForm.query.check1 = this.checklist1[0]
-        // getKnowCheck2(this.knowForm.query.check1)
-        this.$refs.check1.children[0].click()
-      }
+      getKnowCheck(0).then(res => {
+        console.log('res.code:' + res.code)
+        if (res && res.code === 200) {
+          this.checklist1 = res.data.contents
+          if (this.checklist1 != null && this.checklist1[0] != null) {
+            this.check1 = this.checklist1[0].knowledge_type_id
+          }
+          this.getKnowCheck2()
+        } else {
+          Notification.success(`${res.msg || '发生错误'}`)
+        }
+      })
     },
     // 获取分类二
-    getKnowCheck2(check1) {
-      this.checklist2 = getKnowCheck2(check1)
-      if (this.checklist2 != null) {
-        this.knowForm.query.check2 = this.checklist2[0]
-      }
+    getKnowCheck2() {
+      getKnowCheck(this.check1).then(res => {
+        if (res && res.code === 200) {
+          this.checklist2 = res.data.contents
+          if (this.checklist2 != null && this.checklist2[0] != null) {
+            this.check2 = this.checklist2[0].knowledge_type_id
+          }
+          this.getKnowCheck3()
+        } else {
+          Notification.success(`${res.msg || '发生错误'}`)
+        }
+      })
     },
     // 获取分类二
-    getKnowCheck3(check2) {
-      this.checklist3 = getKnowCheck3(check2)
-      if (this.checklist3 != null) {
-        this.knowForm.query.check3 = this.checklist3[0]
-      }
+    getKnowCheck3() {
+      getKnowCheck(this.check2).then(res => {
+        if (res && res.code === 200) {
+          this.checklist3 = res.data.contents
+          if (this.checklist3 != null && this.checklist3[0] != null) {
+            this.check3 = this.checklist3[0].knowledge_type_id
+          }
+        } else {
+          Notification.success(`${res.msg || '发生错误'}`)
+        }
+      })
     },
     // 获取热搜词
     getHotKeyList() {
-      this.hotKeyList = getHotKeyList()
+      getHotKeyList().then(res => {
+        if (res && res.code === 200) {
+          this.hotKeyList = res.data.contents
+        } else {
+          Notification.success(`${res.msg || '发生错误'}`)
+        }
+      })
     },
     getKnowSearchList() {
-      const result = getKnowSearchList(this.knowForm)
-      const { page, total, size, data } = result.data
-      this.tableData = { page: page + 1, total, size, data }
+      this.query.typeid = this.check3 || this.check2 || this.check1
+      getKnowSearchList(this.query).then(res => {
+        if (res && res.code === 200) {
+          const { page, total, size, contents } = res.data
+          this.tableData = { page: page - 1, total, size, contents }
+        } else {
+          Notification.success(`${res.msg || '发生错误'}`)
+        }
+      })
     },
     // 处理页面pagesize变化
     handleSizeChange(val) {
-      this.query.size = val
-      this.fetchTableData()
+      this.query.showCount = val
+      this.getKnowSearchList()
     },
     // 处理页码跳转
     handleCurrentChange(val) {
-      this.query.page = val - 1
-      this.fetchTableData()
+      this.query.pageNum = val
+      this.getKnowSearchList()
     },
     // 知识详情
     goKnowDetail(id, knowId) {

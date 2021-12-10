@@ -1,5 +1,6 @@
 <template>
   <div class="video">
+    <meta name="referrer" content="no-referrer">
     <resources-banner>
       <template>
         视频学习
@@ -9,16 +10,16 @@
       <div class="w1200 clearfix">
         <div class="videodiv mtop20 clearfix">
           <div class="video-play">
-            <video id="video" ref="videoshow" :src="dataInfo.videoPath" controls="controls" style="width:100%; height:100%; object-fit: cover" />
+            <video id="video" ref="videoshow" :src="dataInfo.video_url_address" controls="controls" style="width:100%; height:100%; object-fit: cover" />
           </div>
           <div class="video-infor" :style="theStyle">
             <div class="video-infor-tit">{{ dataInfo.title }} </div>
             <div class="video-infor-tip">
               <div>上传人：{{ dataInfo.author }}</div>
-              <div>上传时间：{{ dataInfo.time }}</div>
+              <div>上传时间：{{ dataInfo.create_time }}</div>
             </div>
             <div class="fsize14 g9e9ea0 mtop20 fw">内容简介</div>
-            <div class="video-infor-txt">{{ dataInfo.remark }}</div>
+            <div class="video-infor-txt">{{ dataInfo.introduce }}</div>
           </div>
         </div>
       </div>
@@ -29,43 +30,30 @@
 <script>
 import Footer from '@/components/Footer'
 import ResourcesBanner from '@/components/ResourcesBanner'
-import { getVideoInfo } from '../../api/upload/video'
+import { detailsVideo } from '../../api/upload/video'
 export default {
   components: { ResourcesBanner, Footer },
   data() {
     return {
       videoId: 0,
       theStyle: { height: '582px' },
-      dataInfo: {
-        videoPath: 'http://gainetvideo.kuaiyunds.com/gainetvideo/2019年/一副沙画，感动了所有人.mp4',
-        title: '河南省信创综合服务保障中心',
-        author: '河南省信创综合服务保障中心',
-        remark: '党的主要思想包括指导思想和思想路线。 中国共产党 的指导思想:: 中国共产党以马克思列宁主义、毛泽东 思想、邓小平理论和“三个代表”重要思想作为自己 的行动指南。 党的思想路线基本内容是:一切从实际 出发,理论联系实际,实事求是,在实践中检验和发展真理。',
-        time: '2021-11-12'
-      }
+      dataInfo: {}
     }
   },
-  computed: {
-  },
-  created: {
-    // this.getVideoInfo()
-  },
-  mounted() {
-    this.init()
+  async mounted() {
+    await this.getVideoInfo()
   },
   methods: {
     // 视频
-    init() {
-      const video = document.getElementById('video')
-      video.addEventListener('canplay', function() {
-        this.theStyle.height = this.videoHeight + 'px'
-        console.info('this.height:' + this.videoHeight)
-      })
-    },
-    getVideoInfo() {
+    async getVideoInfo() {
       this.videoId = this.$route.query.videoId
-      const result = getVideoInfo(this.videoId)
-      this.dataInfo = result.data
+      detailsVideo(this.videoId).then(res => {
+        if (res && res.code === 200) {
+          this.dataInfo = res.data
+        } else {
+          Notification.success(`${res.msg || '发生错误'}`)
+        }
+      })
     }
   }
 }

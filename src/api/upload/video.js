@@ -25,24 +25,36 @@ export function getUploadDriverListByQuery(data) {
   })
 }
 
-export function getCheckList(firmId) {
+export function getCheckList(companyId) {
   return request({
-    url: `/video/classify/${firmId}`,
-    method: 'get'
+    url: `members/getEquipmentBYCompany`,
+    method: 'post',
+    data: { company_id: companyId, pid: 0 }
   })
 }
 
+// 获取厂商列表
 export function getFirmList() {
   return request({
-    url: `/video/FirmList`,
-    method: 'get'
+    url: `/members/GetManufacturerList`,
+    method: 'post'
   })
 }
 
-export function getVideoInfo(firmId) {
+export function getVideoInfo(data) {
   return request({
-    url: `/video/getVideoInfo/${firmId}`,
-    method: 'get'
+    url: `/members/getVideo`,
+    method: 'post',
+    data
+  })
+}
+export function detailsVideo(videoId) {
+  return request({
+    url: `/members/detailsVideo`,
+    method: 'post',
+    data: {
+      videId: videoId
+    }
   })
 }
 
