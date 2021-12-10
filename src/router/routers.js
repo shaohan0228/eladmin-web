@@ -57,6 +57,7 @@ export const constantRouterMap = [
     component: Layout,
     redirect: 'news/industry',
     meta: { title: '新闻中心', icon: 'el-icon-s-claim' },
+    hidden: true,
     children: [
       {
         path: 'industry',
@@ -161,6 +162,7 @@ export const constantRouterMap = [
     name: 'About',
     redirect: 'noRedirect',
     meta: { title: '关于我们', icon: 'el-icon-s-tools' },
+    hidden: true,
     children: [
       {
         path: '',
@@ -209,6 +211,12 @@ export const constantRouterMap = [
             component: () => import('@/views/upload/driver/Upload'),
             hidden: true,
             meta: { title: '驱动上传', activeMenu: '/upload_manage/driver' }
+          },
+          {
+            path: 'driver/:id/update',
+            component: () => import('@/views/upload/driver/Upload'),
+            hidden: true,
+            meta: { title: '驱动修改', activeMenu: '/upload_manage/driver' }
           },
           {
             path: 'video',

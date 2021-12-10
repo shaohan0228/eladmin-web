@@ -3,13 +3,14 @@
     <div class="main-tit">{{ modifyId ? '驱动修改' : '驱动上传' }}</div>
     <div class="main-content">
       <!--表单组件-->
-      <el-form ref="uploadForm" size="small" :model="uploadForm" :rules="rules" label-width="100px">
-        <el-form-item label="驱动标题" prop="driverName">
-          <el-input v-model="uploadForm.driverName" style="width: 670px" placeholder="请输入驱动标题" />
+      <el-form ref="uploadForm" size="small" :model="formData" :rules="rules" label-width="100px">
+        <el-form-item label="驱动标题" prop="title">
+          <el-input v-model="formData.title" style="width: 670px" placeholder="请输入驱动标题" />
         </el-form-item>
-        <el-form-item label="驱动链接" prop="driverPath">
-          <el-input v-model="uploadForm.driverPath" :value="imageURL" style="width: 670px" placeholder="请输入驱动下载链接" :disabled="pathInputDisabled" />
+        <el-form-item label="驱动链接" prop="path">
+          <el-input v-model="formData.path" style="width: 670px" placeholder="请输入驱动下载链接" :disabled="pathInputDisabled" />
           <el-upload
+            v-if="!uploadDisabled"
             ref="upload"
             :limit="1"
             :before-upload="beforeUpload"
@@ -26,12 +27,18 @@
             <!-- <div slot="tip" class="el-upload__tip">可上传任意格式文件，且不超过100M</div>-->
           </el-upload>
         </el-form-item>
-        <el-form-item label="驱动简介" prop="driverIntroduction">
-          <el-input v-model="uploadForm.driverIntroduction" :rows="5" type="textarea" style="width: 670px;" placeholder="请输入简介" />
+        <el-form-item label="驱动简介" prop="introduction">
+          <el-input
+            v-model="formData.introduction"
+            :rows="5"
+            type="textarea"
+            style="width: 670px;"
+            placeholder="请输入简介"
+          />
         </el-form-item>
-        <el-form-item label="关联功能" prop="driverConnection">
+        <el-form-item v-if="!disableEditorCategories" label="关联功能" prop="categories">
           <el-cascader
-            v-model="uploadForm.categories"
+            v-model="formData.categories"
             :props="cascadeProps"
             :show-all-levels="true"
             clearable
@@ -41,18 +48,19 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="danger" @click.native.prevent="handleUploadForm">提交</el-button>
+          <ita-button type="primary" @click.native.prevent="uploadDriver">提交</ita-button>
         </el-form-item>
       </el-form>
     </div>
     <el-dialog
       :title="dialogInfo.title"
       :visible.sync="dialogInfo.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
       @closed="dialogClosed"
     >
-      <div>
-        {{ dialogInfo.content }}
-      </div>
+      <div v-html="dialogInfo.content" />
       <div slot="footer" class="dialog-footer">
         <ita-button type="primary" @click="dialogConfirm">确认</ita-button>
         <ita-button v-if="dialogInfo.confirm" @click="dialogCancel">取消</ita-button>
@@ -63,11 +71,17 @@
 
 <script type="text/javascript">
 import { mapGetters } from 'vuex'
+import ItaButton from '../../../components/ItaButton'
+import { getUploadDriver, uploadDriver, updateDriver } from '../../../api/upload/driver'
+import { getDriverCategories } from '../../../api/dict/dict'
+
 export default {
   name: 'DriverUpload',
+  components: { ItaButton },
   data() {
     return {
       modifyId: null,
+      companyId: null,
       dialogInfo: {
         visible: false,
         title: '提示',
@@ -76,118 +90,41 @@ export default {
         confirmCallback: undefined,
         cancelCallback: undefined
       },
-      uploadForm: {
-        driverName: '',
-        driverPath: '',
-        driverIntroduction: '',
-        driverConnection: ''
+      formData: {
+        title: '',
+        path: '',
+        introduction: '',
+        categories: []
       },
       pathInputDisabled: false,
+      uploadDisabled: false,
+      disableEditorCategories: false,
       uploadFileName: '',
       uploadFilePaths: [],
+      supportFileType: ['.mp4', '.m4a'],
+      acceptFile: '.mp4,.m4a',
       cascadeProps: {
         multiple: false,
         checkStrictly: true,
         lazy: true,
         lazyLoad: this.loadDriverCategories
       },
-      options: [{
-        value: 'zhinan',
-        label: '指南',
-        children: [{
-          value: 'shejiyuanze',
-          label: '设计原则',
-          children: [{
-            value: 'yizhi',
-            label: '一致'
-          }, {
-            value: 'fankui',
-            label: '反馈'
-          }, {
-            value: 'xiaolv',
-            label: '效率'
-          }, {
-            value: 'kekong',
-            label: '可控'
-          }]
-        }, {
-          value: 'daohang',
-          label: '导航',
-          children: [{
-            value: 'cexiangdaohang',
-            label: '侧向导航'
-          }, {
-            value: 'dingbudaohang',
-            label: '顶部导航'
-          }]
-        }]
-      }, {
-        value: 'zujian',
-        label: '组件',
-        children: [{
-          value: 'basic',
-          label: 'Basic',
-          children: [{
-            value: 'layout',
-            label: 'Layout 布局'
-          }, {
-            value: 'color',
-            label: 'Color 色彩'
-          }]
-        }, {
-          value: 'form',
-          label: 'Form',
-          children: [{
-            value: 'radio',
-            label: 'Radio 单选框'
-          }, {
-            value: 'checkbox',
-            label: 'Checkbox 多选框'
-          }, {
-            value: 'input',
-            label: 'Input 输入框'
-          }]
-        }, {
-          value: 'data',
-          label: 'Data',
-          children: [{
-            value: 'table',
-            label: 'Table 表格'
-          }, {
-            value: 'tag',
-            label: 'Tag 标签'
-          }]
-        }]
-      }, {
-        value: 'ziyuan',
-        label: '资源',
-        children: [{
-          value: 'axure',
-          label: 'Axure Components'
-        }, {
-          value: 'sketch',
-          label: 'Sketch Templates'
-        }, {
-          value: 'jiaohu',
-          label: '组件交互文档'
-        }]
-      }],
       rules: {
-        driverName: [
+        title: [
           { required: true, message: '请输入驱动标题', trigger: 'blur' },
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
         ],
-        driverPath: [
+        path: [
           { required: true, message: '请输入驱动下载链接或选择附件上传', trigger: 'blur' },
-          { min: 2, max: 200, message: '长度在 7 到 200 个字符', trigger: 'blur' }
+          { min: 2, max: 500, message: '长度在 7 到 500 个字符', trigger: 'blur' },
+          { pattern: /^(ftp:\/\/|http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/, message: '请输入合法的驱动地址', trigger: 'blur' }
         ],
-        driverIntroduction: [
+        introduction: [
           { required: true, message: '请输入驱动简介', trigger: 'blur' },
-          { min: 2, max: 200, message: '长度在 2 到 200 个字符', trigger: 'blur' }
+          { min: 2, max: 1000, message: '长度在 2 到 1000 个字符', trigger: 'blur' }
         ],
-        driverConnection: [
-          { required: true, message: '请选择关联功能', trigger: 'blur' },
-          { min: 1, max: 5, message: '长度在 2 到 200 个字符', trigger: 'blur' }
+        categories: [
+          { required: true, message: '请选择关联功能', trigger: 'blur' }
         ]
       }
     }
@@ -201,22 +138,98 @@ export default {
   created() {
     const { params } = this.$route
     this.modifyId = params.id
+    this.companyId = this.$store.getters.user.company_id
+  },
+  mounted() {
+    if (this.modifyId) {
+      this.loadDriverInfo(this.modifyId)
+    }
   },
   methods: {
-    handleUploadForm() {
+    async loadDriverInfo(driverId) {
+      const res = await getUploadDriver(driverId)
+      if (res && res.code === 200) {
+        const { data } = res
+        this.formData.title = data.name
+        this.formData.introduction = data.introduce
+        this.pathInputDisabled = true
+        this.uploadDisabled = true
+        this.disableEditorCategories = true
+        this.formData.path = data.address
+        this.formData.categories.push[data.equipment_id]
+      } else {
+        this.openDialog('错误', '无法获取驱动信息', false, () => { this.$routers.push({ path: 'upload_manage/driver' }) })
+      }
     },
-    loadDriverCategories(node, resolve) {
-      // const { value } = node
-      resolve([])
+    async uploadDriver() {
+      this.$refs.uploadForm.validate(async(result) => {
+        if (!result) {
+          return
+        }
+        const updateParams = {
+          introduce: this.formData.introduction,
+          address: this.formData.path,
+          name: this.formData.title
+        }
+
+        let uploadResult
+        const operateType = this.modifyId ? '驱动更新' : '驱动上传'
+        if (this.modifyId) {
+          updateParams.driverId = this.modifyId
+          uploadResult = await updateDriver(updateParams)
+        } else {
+          updateParams.company_id = this.companyId
+          updateParams.equipment_id = this.formData.categories[this.formData.categories.length - 1]
+          uploadResult = await uploadDriver(updateParams)
+        }
+
+        if (uploadResult && uploadResult.code === 200) {
+          this.openDialog(
+            '成功',
+            `${operateType}成功，点击确定返回列表页面`,
+            false,
+            () => { this.$router.push({ path: '/upload_manage/driver' }) },
+          )
+        } else {
+          this.openDialog(
+            '失败',
+            `${operateType}失败, 原因： ${uploadResult.msg} 。<br/> 点击确定返回列表页面`,
+            false,
+            () => { this.$router.push({ path: '/upload_manage/driver' }) }
+          )
+        }
+      })
+    },
+    async loadDriverCategories(node, resolve) {
+      const { value } = node
+      await getDriverCategories(this.companyId, value).then((res) => {
+        const _result = res.data.contents
+        const nodes = _result.map((_item) => {
+          return {
+            label: `${_item.equipment_name} ${_item.equipment_model}`,
+            value: _item.equipment_id
+          }
+        })
+        if (nodes.length === 0) {
+          resolve()
+        } else {
+          resolve(nodes)
+        }
+      }).catch(() => {
+        resolve([])
+      })
     },
     // 上传文件
     upload() {
       this.$refs.upload.submit()
     },
     beforeUpload(file) {
-      if (this.uploadForm.driverPath) {
+      // eslint-disable-next-line no-unused-vars
+      const fileExt = file.name.substring(file.name.lastIndexOf('.'))
+
+      if (this.formData.path) {
         this.loading = false
-        this.$message.error('如果您指定了下载地址，则不能再上传文件')
+        this.$message.error('如果您指定了驱动地址，则不能再上传文件')
         return false
       }
       let isLt2M = true
@@ -230,8 +243,9 @@ export default {
     },
     handleUploadSuccess(response, file, fileList) {
       this.uploadFilePaths.push(response.data[0])
-      this.uploadForm.driverPath = response.data[0]
+      this.formData.path = response.data[0]
       this.pathInputDisabled = true
+      this.$refs.uploadForm.validateField('path')
     },
     // 监听上传失败
     handleUploadError(e, file, fileList) {
@@ -245,9 +259,11 @@ export default {
     },
     // 监听上传文件移除
     handleUploadRemove(file, fileList) {
-      this.uploadFilePaths = this.$_.remove(this.uploadFilePaths, file.response.data[0])
-      this.pathInputDisabled = false
-      this.uploadForm.driverPath = ''
+      if (file.response) {
+        this.uploadFilePaths = this.$_.remove(this.uploadFilePaths, file.response.data[0])
+        this.pathInputDisabled = false
+        this.formData.path = ''
+      }
     },
     // 监听上传文件超过数量限制
     handleUploadOverLimit(files, fileList) {
@@ -288,21 +304,21 @@ export default {
 </script>
 <style lang="scss" scoped>
 
-  .main-con {
-    @apply bg-white;
-    padding-bottom: 20px;
+.main-con {
+  @apply bg-white;
+  padding-bottom: 20px;
 
-    .main-tit {
-      font-size: 16px;
-      color: #333;
-      padding: 0 20px;
-      line-height: 76px;
-      height: 78px;
-      border-bottom: 1px solid #ddd;
-    }
-
-    .main-content {
-      padding: 20px;
-    }
+  .main-tit {
+    font-size: 16px;
+    color: #333;
+    padding: 0 20px;
+    line-height: 76px;
+    height: 78px;
+    border-bottom: 1px solid #ddd;
   }
+
+  .main-content {
+    padding: 20px;
+  }
+}
 </style>

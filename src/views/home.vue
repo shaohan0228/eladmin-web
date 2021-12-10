@@ -12,12 +12,12 @@
             {{ user.name }}<i class="el-icon-arrow-down el-icon--right" />
           </span>
           <el-dropdown-menu slot="dropdown">
-            <router-link to="/user/center">
-              <el-dropdown-item>账号信息</el-dropdown-item>
-            </router-link>
-            <router-link to="/messages">
-              <el-dropdown-item>消息中心</el-dropdown-item>
-            </router-link>
+            <!--            <router-link to="/user/center">-->
+            <!--              <el-dropdown-item>账号信息</el-dropdown-item>-->
+            <!--            </router-link>-->
+            <!--            <router-link to="/messages">-->
+            <!--              <el-dropdown-item>消息中心</el-dropdown-item>-->
+            <!--            </router-link>-->
             <router-link to="/question/list">
               <el-dropdown-item>问题管理</el-dropdown-item>
             </router-link>

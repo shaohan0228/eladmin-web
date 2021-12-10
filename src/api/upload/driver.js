@@ -2,16 +2,19 @@ import request from '@/utils/request'
 
 export function getUploadDriverList(data) {
   return request({
-    url: `/driver/upload/list`,
+    url: `/members/getDriveByhyhb`,
     method: 'post',
     data
   })
 }
 
-export function getUploadDriver(id) {
+export function getUploadDriver(driverID) {
   return request({
-    url: '/driver/${id}',
-    method: 'get'
+    url: '/members/detailsDriver',
+    method: 'post',
+    data: {
+      driverID
+    }
   })
 }
 export function getUploadDriverListByQuery(data) {
@@ -50,3 +53,18 @@ export function addDownloadCount(driverId) {
   })
 }
 
+export function uploadDriver(data) {
+  return request({
+    url: '/members/uploadDriver',
+    method: 'post',
+    data
+  })
+}
+
+export function updateDriver(data) {
+  return request({
+    url: '/members/updateDriver',
+    method: 'post',
+    data
+  })
+}

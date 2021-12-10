@@ -2,22 +2,48 @@ import request from '@/utils/request'
 
 export function getUploadKnowledgeList(data) {
   return request({
-    url: `/knowledge/upload/list`,
+    url: `/members/getKnowledgeListByHybh`,
     method: 'post',
     data
   })
 }
 
-export function getUploadKnowledge(id) {
+/**
+ * 获取上传的知识库详情
+ * @param knowledge_id
+ * @returns {*}
+ */
+export function getUploadKnowledge(knowledge_id) {
   return request({
-    url: '/knowledge/${id}',
-    method: 'get'
+    url: '/members/detailsKnowledge',
+    method: 'post',
+    data: {
+      knowledge_id
+    }
   })
 }
 
+/**
+ * 上传知识库
+ * @param data
+ * @returns {*}
+ */
 export function uploadKnowledge(data) {
   return request({
-    url: '/knowledge/upload',
+    url: '/members/uploadKnowledge',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 上传知识库
+ * @param data
+ * @returns {*}
+ */
+export function updateKnowledge(data) {
+  return request({
+    url: '/members/updateKnowledge',
     method: 'post',
     data
   })

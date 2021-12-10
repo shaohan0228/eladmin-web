@@ -26,10 +26,10 @@
         <el-table-column prop="introduce" label="内容简介" />
         <el-table-column prop="state" label="状态">
           <template v-slot:default="scope">
-            <el-tag v-if="scope.row.state == 1" type="success">审核通过</el-tag>
-            <el-tag v-else-if="scope.row.state == 2" type="warning">待审核</el-tag>
-            <el-tag v-else-if="scope.row.state == 3" type="warning">未通过</el-tag>
-            <el-tag v-else type="warning">未知</el-tag>
+            <el-tag v-if="scope.row.state == 0" type="warning">审核中</el-tag>
+            <el-tag v-else-if="scope.row.state == 1" type="success">已通过</el-tag>
+            <el-tag v-else-if="scope.row.state == 2" type="danger">弃用</el-tag>
+            <el-tag v-else type="info">未知</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="update_time" label="上传日期" />
@@ -75,8 +75,6 @@ export default {
       },
       query: {
         blurry: '',
-        paused: undefined,
-        type: undefined,
         createdTime: [],
         page: 0,
         size: 10,
