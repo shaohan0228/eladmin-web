@@ -76,8 +76,7 @@ export default {
       type: '0',
       title: '信创知识详情',
       tableData: {
-        query: {
-        },
+        query: {},
         total: 0,
         size: 10,
         page: 1,
@@ -98,6 +97,7 @@ export default {
       const result = await getKnowledgeList(this.tableData)
       const { page, total, size, contents } = result.data
       this.tableData = { page, total, size, contents }
+      console.log(this.tableData)
     },
     // 处理页面pagesize变化
     handleSizeChange(val) {
@@ -113,7 +113,7 @@ export default {
       this.fetchTableData()
     },
     getQueryKnowledgeList(type) {
-      this.$router.push('/resources/knowledge/' + type + '/list')
+      // this.$router.push('/resources/knowledge/' + type + '/list')
     },
     getKnowledgeDetails(id) {
       let type = this.type
